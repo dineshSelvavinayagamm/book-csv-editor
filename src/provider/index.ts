@@ -1,5 +1,3 @@
-import AppThemeProvider from "./ThemeProvider";
+import AppThemeProvider from './ThemeProvider';
 
-export {
-    AppThemeProvider
-}
+export { AppThemeProvider };
