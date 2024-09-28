@@ -162,7 +162,9 @@
           "tsx",
           "mdx",
           "antialiased",
-          "Readonly"
+          "Readonly",
+          "matcher",
+          "Navigations"
         ],
         "skipIfMatch": ["http://[^s]*", "^[-\\w]+/[-\\w\\.]+$"],
         "skipWordIfMatch": ["^foobar.*$"],
