@@ -14,7 +14,7 @@ const SideBar = () => {
           <Link href="/" passHref>
             <p
               className={`block p-2 rounded ${
-                pathname === "/" ? "bg-blue-500 text-white" : ""
+                pathname === "/" ? "bg-blue-500" : ""
               }`}
             >
               Home
@@ -25,21 +25,10 @@ const SideBar = () => {
           <Link href="/section1" passHref>
             <p
               className={`block p-2 rounded ${
-                pathname === "/section1" ? "bg-blue-500 text-white" : ""
+                pathname === "/section1" ? "bg-blue-500" : ""
               }`}
             >
               Section 1
-            </p>
-          </Link>
-        </li>
-        <li>
-          <Link href="/section2" passHref>
-            <p
-              className={`block p-2 rounded ${
-                pathname === "/section2" ? "bg-blue-500 text-white" : ""
-              }`}
-            >
-              Section 2
             </p>
           </Link>
         </li>

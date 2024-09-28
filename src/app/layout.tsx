@@ -4,6 +4,7 @@ import { Theme } from '@radix-ui/themes';
 import "./globals.css";
 import '@radix-ui/themes/styles.css';
 import { AppLayout } from "@/components";
+import { AppThemeProvider } from "@/provider";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -31,11 +32,13 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <Theme>
-          <AppLayout>
-            {children}
-          </AppLayout>
-        </Theme>
+        <AppThemeProvider>
+          <Theme>
+            <AppLayout>
+              {children}
+            </AppLayout>
+          </Theme>
+        </AppThemeProvider>
       </body>
     </html>
   );
