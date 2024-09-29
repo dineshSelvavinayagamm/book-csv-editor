@@ -164,7 +164,10 @@
           "antialiased",
           "Readonly",
           "matcher",
-          "Navigations"
+          "Navigations",
+          "bezier",
+          "radix",
+          "keyframes"
         ],
         "skipIfMatch": ["http://[^s]*", "^[-\\w]+/[-\\w\\.]+$"],
         "skipWordIfMatch": ["^foobar.*$"],

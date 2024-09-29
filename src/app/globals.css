@@ -4,15 +4,25 @@
 
 :root {
   /* Light theme colors */
-  --background: #ffffff;
-  --text: #0a0a0a;
+  --background: #f8f9fa;
+  --text: #000000;
+  --text-secondary: #ffffff;
+  --white: #ffffff;
+  --black: #000000;
+  --primary: #007BFF;
+  --tertiary: #343a40;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
     /* Dark theme colors */
-    --background: #0a0a0a;
+    --background: #343a40;
     --text: #ffffff;
+    --text-secondary: #000000;
+    --white: #ffffff;
+    --black: #000000;
+    --tertiary: #343a40;
+    --primary: #007BFF;
   }
 }
 
