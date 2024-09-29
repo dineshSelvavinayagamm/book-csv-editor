@@ -1,19 +1,26 @@
-import { ReactNode } from "react";
+'use client';
+
+import { Flex, IconButton } from '@radix-ui/themes';
+import React from 'react';
+import { HamburgerMenuIcon } from '@radix-ui/react-icons';
 
 interface LayoutProps {
-  children: ReactNode;
+  onClickMenu: () => void;
 }
 
-const Header = ({ children }: LayoutProps) => {
+const Header = ({ onClickMenu }: LayoutProps) => {
   return (
-    <div className="flex-1">
-      <header className="sticky top-0 z-10 bg-white shadow-md p-4">
+    <header className="sticky top-0 z-10 shadow-md p-4">
+      <Flex direction="row" justify="between" align="center">
         <h1 className="text-xl font-bold">My Sticky Header</h1>
-      </header>
-      <main className="p-6">{children}</main>
-    </div>
+        <Flex direction="row" gap="1" align="center">
+          <IconButton onClick={onClickMenu}>
+            <HamburgerMenuIcon />
+          </IconButton>
+        </Flex>
+      </Flex>
+    </header>
   );
-}
+};
 
 export default Header;
- 
