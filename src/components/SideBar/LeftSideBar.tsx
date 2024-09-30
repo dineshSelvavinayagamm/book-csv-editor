@@ -1,3 +1,5 @@
+"use client"
+
 import React, { useCallback, useState } from 'react';
 import {HamburgerMenuIcon} from '@radix-ui/react-icons';
 import { AppAccordion } from '../Accordion';

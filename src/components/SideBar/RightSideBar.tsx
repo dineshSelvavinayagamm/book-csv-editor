@@ -1,3 +1,5 @@
+'use client';
+
 import { Cross2Icon } from '@radix-ui/react-icons';
 import { Flex, IconButton, Switch, Text } from '@radix-ui/themes';
 import { useTheme } from 'next-themes';

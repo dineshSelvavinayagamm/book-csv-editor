@@ -1,3 +1,5 @@
+'use client';
+
 import React, { ReactNode, useCallback, useState } from 'react';
 import { Header } from '../Header';
 import { LeftSideBar, RightSideBar } from '../SideBar';

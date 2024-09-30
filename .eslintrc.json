@@ -167,7 +167,8 @@
           "Navigations",
           "bezier",
           "radix",
-          "keyframes"
+          "keyframes",
+          "accessor"
         ],
         "skipIfMatch": ["http://[^s]*", "^[-\\w]+/[-\\w\\.]+$"],
         "skipWordIfMatch": ["^foobar.*$"],

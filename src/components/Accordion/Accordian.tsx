@@ -1,3 +1,5 @@
+'use client';
+
 import React, { ReactNode, useCallback, useState } from 'react';
 import * as Accordion from '@radix-ui/react-accordion';
 import Link from 'next/link';
