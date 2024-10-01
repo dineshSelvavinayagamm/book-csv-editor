@@ -18,7 +18,7 @@ const AccordionContent = forwardRef<HTMLDivElement, AccordionContentProps>(
       {...props}
       ref={forwardedRef}
     >
-      <div className="py-[10px] px-5">{children}</div>
+      <div className="py-[10px] px-2">{children}</div>
     </Accordion.Content>
   ),
 );

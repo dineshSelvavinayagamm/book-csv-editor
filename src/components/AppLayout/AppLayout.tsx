@@ -1,6 +1,9 @@
+'use client';
+
 import React, { ReactNode, useCallback, useState } from 'react';
 import { Header } from '../Header';
 import { LeftSideBar, RightSideBar } from '../SideBar';
+import { Footer } from '../Footer';
 
 interface LayoutProps {
   children: ReactNode;
@@ -20,9 +23,10 @@ const AppLayout = ({ children }: LayoutProps) => {
   return (
     <div className="min-h-screen flex">
       <LeftSideBar />
-      <div className="flex-1">
+      <div className="flex-1 flex flex-col">
         <Header onClickMenu={onClickMenu} />
-        <main className="p-6">{children}</main>
+        <main className="flex-1 p-6">{children}</main>
+        <Footer />
       </div>
       <RightSideBar isOpen={isOpen} onClose={onCloseDrawer} />
     </div>

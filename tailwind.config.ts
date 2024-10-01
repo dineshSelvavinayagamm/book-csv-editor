@@ -11,11 +11,14 @@ const config: Config = {
       colors: {
         background: 'var(--background)',
         text: 'var(--text)',
-        white: 'var(--text)',
-        black: 'var(--text)',
+        white: 'var(--white)',
+        white100: 'var(--white100)',
+        white200: 'var(--white200)',
+        black: 'var(--black)',
         tertiary: 'var(--tertiary)',
         primary: 'var(--primary)',
         textSecondary: 'var(--text-secondary)',
+        paleBlue: 'var(--pale-blue)',
       },
       keyframes: {
         slideDown: {
