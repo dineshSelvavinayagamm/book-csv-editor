@@ -4,3 +4,6 @@ export * from './SideBar';
 export * from './Accordion';
 export * from './Footer';
 export * from './Table';
+export * from './DataGrid';
+export * from './Fields';
+export * from './Core';

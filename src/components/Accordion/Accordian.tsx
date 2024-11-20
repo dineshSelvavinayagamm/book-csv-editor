@@ -18,7 +18,7 @@ interface AppAccordionProps {
   data: {
     title: string;
     route?: string;
-    icon?: string;
+    icon?: string | ReactNode;
     items?: MenuItem[];
   }[];
   isCollapsed?: boolean;
@@ -53,21 +53,25 @@ const AppAccordion: React.FC<AppAccordionProps> = ({ data, isCollapsed }) => {
                   isCollapsed={isCollapsed}
                 />
               </AccordionTrigger>
-              {item.items.map((menu) => (
-                <Link key={menu.title} href={item?.route ?? ''} passHref>
-                  <AccordionContent
-                    // eslint-disable-next-line react/jsx-no-bind
-                    onClick={() => onChangeMenu(menu)}
-                    className={`text-textSecondary cursor-pointer ${selectedMenu.title === menu.title ? 'bg-primary' : ''}`}
-                  >
-                    <MenuTitleContainer
-                      title={menu?.title}
-                      icon={menu?.icon}
-                      isCollapsed={isCollapsed}
-                    />
-                  </AccordionContent>
-                </Link>
-              ))}
+              {!isCollapsed && (
+                <>
+                  {item.items.map((menu) => (
+                    <Link key={menu.title} href={menu?.route ?? ''} passHref>
+                      <AccordionContent
+                        // eslint-disable-next-line react/jsx-no-bind
+                        onClick={() => onChangeMenu(menu)}
+                        className={`text-textSecondary cursor-pointer ${selectedMenu.title === menu.title ? 'bg-primary' : ''}`}
+                      >
+                        <MenuTitleContainer
+                          title={menu?.title}
+                          icon={menu?.icon}
+                          isCollapsed={isCollapsed}
+                        />
+                      </AccordionContent>
+                    </Link>
+                  ))}
+                </>
+              )}
             </AccordionItem>
           ) : (
             <AccordionItem value={item.title} key={item.title} className="bg-tertiary">

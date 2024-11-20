@@ -1,7 +1,7 @@
-"use client"
+'use client';
 
 import React, { useCallback, useState } from 'react';
-import {HamburgerMenuIcon} from '@radix-ui/react-icons';
+import { HamburgerMenuIcon } from '@radix-ui/react-icons';
 import { AppAccordion } from '../Accordion';
 import { SIDE_BAR_MENU } from '@/constants';
 import { Flex, IconButton } from '@radix-ui/themes';
@@ -19,7 +19,7 @@ const LeftSideBar = () => {
         isCollapsed ? 'w-20' : 'w-64'
       }`}
     >
-      <Flex className='m-2'>
+      <Flex className="m-2">
         <IconButton onClick={toggleSidebar}>
           <HamburgerMenuIcon />
         </IconButton>

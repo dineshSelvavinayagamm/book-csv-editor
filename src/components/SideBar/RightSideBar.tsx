@@ -1,9 +1,8 @@
 'use client';
-
-import { Cross2Icon } from '@radix-ui/react-icons';
-import { Flex, IconButton, Switch, Text } from '@radix-ui/themes';
-import { useTheme } from 'next-themes';
-import React, { useCallback, useState } from 'react';
+import { Cross2Icon, PersonIcon } from '@radix-ui/react-icons';
+import { Flex, IconButton, Text, Avatar, Card, Button } from '@radix-ui/themes';
+import React, { useCallback } from 'react';
+import { useRouter } from 'next/navigation';
 
 interface RightSideBarProps {
   isOpen: boolean;
@@ -11,22 +10,25 @@ interface RightSideBarProps {
 }
 
 const RightSideBar = ({ isOpen, onClose }: RightSideBarProps) => {
-  const { setTheme } = useTheme();
-  const [checked, setChecked] = useState<boolean>(false);
-  const onCheckedChange = useCallback(
-    (value: boolean) => {
-      setChecked(value);
-      if (value) {
-        setTheme('dark');
-      } else {
-        setTheme('light');
-      }
-    },
-    [setTheme],
-  );
+  const router = useRouter();
+
+  const handleLogout = useCallback(() => {
+    router.push('/login');
+  }, [router]);
+
+  const handleProfile = useCallback(() => {
+    router.push('/profile');
+  }, [router]);
+
+  const handleNotifications = useCallback(() => {}, []);
+  const handleMessages = useCallback(() => {}, []);
+  const handleSettings = useCallback(() => {}, []);
+
   return (
     <>
-      {isOpen && <div className="fixed inset-0 z-40" onClick={onClose} />}
+      {isOpen && (
+        <div className="fixed inset-0 z-40 bg-black opacity-50" onClick={onClose} />
+      )}
 
       <div
         className={`fixed top-0 right-0 h-full bg-tertiary text-primary p-4 shadow-lg z-50 transition-transform ${
@@ -39,10 +41,52 @@ const RightSideBar = ({ isOpen, onClose }: RightSideBarProps) => {
             <Cross2Icon />
           </IconButton>
         </Flex>
-        <Flex direction="row" gap="1" align="center">
-          <Text>Dark theme</Text>
-          <Switch checked={checked} onCheckedChange={onCheckedChange} />
+
+        <Flex direction="column" gap="2" className="mt-4">
+          <Button
+            variant="surface"
+            className="bg-primary text-black"
+            onClick={handleProfile}
+          >
+            Profile
+          </Button>
+          <Button
+            variant="surface"
+            className="bg-primary text-black"
+            onClick={handleNotifications}
+          >
+            Notifications
+          </Button>
+          <Button
+            variant="surface"
+            className="bg-primary text-black"
+            onClick={handleMessages}
+          >
+            Messages
+          </Button>
+          <Button
+            variant="surface"
+            className="bg-primary text-black"
+            onClick={handleSettings}
+          >
+            Settings
+          </Button>
         </Flex>
+
+        <div className="absolute bottom-4 left-0 w-full px-4">
+          <Card
+            variant="surface"
+            className="bg-white shadow-lg rounded-lg flex items-center p-3 cursor-pointer hover:bg-gray-100 transition-colors duration-200"
+            onClick={handleLogout}
+          >
+            <Avatar
+              className="w-10 h-10 rounded-full bg-gray-300 mr-3"
+              alt="User Avatar"
+              fallback={<PersonIcon className="w-6 h-6 text-black" />}
+            />
+            <Text className="text-black font-medium">Logout</Text>
+          </Card>
+        </div>
       </div>
     </>
   );
