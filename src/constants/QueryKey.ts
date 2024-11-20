@@ -1,4 +1,3 @@
-import { getAccessSecurityGroupUser } from '@/api';
 
 export const ApiQueryKey = {
   accessGroups: 'accessGroups',

@@ -1,5 +1,5 @@
 'use client';
-import { getCountry, getUserPreference, masterUserPreferenceDelete } from '@/api';
+import { getUserPreference, masterUserPreferenceDelete } from '@/api';
 import MoreActions from '@/components/MoreActions/MoreActions';
 import { AppTable } from '@/components/Table';
 import { ApiQueryKey, Navigation } from '@/constants';

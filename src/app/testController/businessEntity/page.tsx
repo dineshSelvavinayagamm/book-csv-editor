@@ -1,10 +1,9 @@
 'use client';
-import React, { useCallback } from 'react';
+import React from 'react';
 import { getBusinessEntityType } from '@/api';
 import { AppTable } from '@/components';
 import { ApiQueryKey } from '@/constants';
 import { useQuery } from '@tanstack/react-query';
-import { useRouter } from 'next/navigation';
 
 const columns = [
   {
@@ -30,7 +29,6 @@ const columns = [
 ];
 
 const BusinessEntity = () => {
-  const router = useRouter();
 
   const { isPending, data, isFetching } = useQuery({
     queryKey: [ApiQueryKey.businessEntity],

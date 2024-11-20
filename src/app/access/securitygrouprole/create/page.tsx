@@ -125,7 +125,7 @@ const SecurityGroupRoleCreate: React.FC = () => {
             const value = formData.get(field.name);
             updatedForm[field.name as keyof SecurityGroupRoleForm] =
                 field.name === 'securityRole' || field.name === 'securityGroup'
-                    ? parseInt(value as string, 10)
+                    ? (value as string)
                     : (value as string);
         });
     

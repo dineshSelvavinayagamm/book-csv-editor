@@ -1,10 +1,8 @@
 'use client';
 
-import { Box, Flex, Text, TextField } from '@radix-ui/themes';
+import { Box, Flex, TextField } from '@radix-ui/themes';
 import React from 'react';
 import {
-  ChatBubbleIcon,
-  BellIcon,
   AvatarIcon,
   MagnifyingGlassIcon,
 } from '@radix-ui/react-icons';

@@ -1,4 +1,3 @@
-import { SecurityGrouproleCreate } from '@/api';
 
 export const ApiEndpoints = {
   accessGroups: '/api/v1/access/securityGroupList',

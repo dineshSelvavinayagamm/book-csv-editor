@@ -6,12 +6,11 @@ import { AppTable } from '@/components';
 import { ApiQueryKey, Navigation } from '@/constants';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import MoreActions from '@/components/MoreActions/MoreActions';
-import { useParams, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 
 const Privilege = () => {
   const queryClient = useQueryClient();
   const router = useRouter();
-  const { id } = useParams();
   const { isPending, data, isFetching } = useQuery({
     queryKey: [ApiQueryKey.accessPrivilege],
     queryFn: getAccessPrivilege,

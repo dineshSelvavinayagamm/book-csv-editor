@@ -32,7 +32,7 @@ const formJson: FieldAttributes[] = [
     label: 'Test Package Name',
     type: FieldType.SELECT,
     required: false,
-    schema: z.number(),
+    schema: z.string(),
     options: [],
   },
   {
@@ -40,7 +40,7 @@ const formJson: FieldAttributes[] = [
     label: 'Test Name',
     type: FieldType.SELECT,
     required: false,
-    schema: z.number(),
+    schema: z.string(),
     options: [],
   },
   {
@@ -174,7 +174,7 @@ const TestPackageListCreate: React.FC = () => {
 
       if (field.name === 'testPackageFKFld' || field.name === 'labTestFKFld') {
         updatedTestPackageListForm[field.name as keyof TestPackageListForm] = fieldValue
-          ? parseInt(fieldValue as string, 10)
+          ? (fieldValue as string)
           : undefined;
       } else {
         updatedTestPackageListForm[field.name as keyof TestPackageListForm] =

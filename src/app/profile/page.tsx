@@ -69,6 +69,7 @@ const Profile = () => {
     {
       accessor: 'actions',
       header: 'Actions',
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       render: (row: any) => (
         <MoreActions
           row={row}

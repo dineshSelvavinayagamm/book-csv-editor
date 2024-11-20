@@ -1,6 +1,6 @@
 'use client';
 import React, { useCallback } from 'react';
-import { getTestMaster, labTestMasterDelete, labTestPackageDelete } from '@/api';
+import { getTestMaster, labTestMasterDelete } from '@/api';
 import { AppTable } from '@/components';
 import { ApiQueryKey, Navigation } from '@/constants';
 import { useQuery, useQueryClient } from '@tanstack/react-query';

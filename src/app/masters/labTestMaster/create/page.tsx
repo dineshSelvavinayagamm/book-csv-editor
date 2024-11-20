@@ -4,7 +4,6 @@ import { useRouter } from 'next/navigation';
 import { useMutation } from '@tanstack/react-query';
 import { ApiQueryKey } from '@/constants/QueryKey';
 import { Navigation } from '@/constants';
-import { Field } from '@/components';
 import { Box } from '@radix-ui/themes';
 import { FieldAttributes, FieldType } from '@/types';
 import { z, ZodError } from 'zod';
@@ -70,6 +69,7 @@ const LabTestMasterCreate: React.FC = () => {
       {} as TestPriceForm,
     ),
   );
+  console.log(testPriceForm);
   const [labTestMasterForm, setLabTestMasterForm] = useState<LabTestMasterForm>(
     formJson.reduce<LabTestMasterForm>(
       (acc, field) => ({ ...acc, [field.name]: '' }),
@@ -222,9 +222,9 @@ const LabTestMasterCreate: React.FC = () => {
 
         return (
           <Box key={fieldWithOptions.name} className="flex flex-col space-y-2">
-            <Field
+            {/* <Field
               {...{ ...fieldWithOptions, options: fieldWithOptions.options ?? [] }}
-            />
+            /> */}
             {errors[fieldWithOptions.name as keyof LabTestMasterForm] && (
               <p className="text-red-500 text-sm">
                 {errors[fieldWithOptions.name as keyof LabTestMasterForm]}

@@ -46,6 +46,7 @@ const UserPreferenceCreate: React.FC = () => {
   const [userPreferenceForm, setUserPreferenceForm] = useState(
     formJson.reduce(
       (acc, field) => ({ ...acc, [field.name]: '' }),
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       {} as Record<string, any>,
     ),
   );
@@ -123,6 +124,7 @@ const UserPreferenceCreate: React.FC = () => {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const updatedUserPreferenceForm: Record<string, any> = {};
 
     formJson.forEach((field) => {
@@ -151,6 +153,7 @@ const UserPreferenceCreate: React.FC = () => {
     setUserPreferenceForm(
       formJson.reduce(
         (acc, field) => ({ ...acc, [field.name]: field.required ? '' : undefined }),
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         {} as Record<string, any>,
       ),
     );

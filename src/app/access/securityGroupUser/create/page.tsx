@@ -131,7 +131,7 @@ const SecurityGroupUserCreatePage: React.FC = () => {
       updatedSecurityGroupUserForm[field.name as keyof SecurityGroupUserForm] = [
         'securityGroup',
         'user',
-      ].includes(field.name)? parseInt( value as string, 10):( value as string);
+      ].includes(field.name)? ( value as string):( value as string);
     }); 
 
     setSecurityGroupUserForm({...updatedSecurityGroupUserForm});

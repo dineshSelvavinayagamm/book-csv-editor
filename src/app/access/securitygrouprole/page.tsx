@@ -1,12 +1,11 @@
 'use client';
-import React, { cache, useCallback } from 'react';
+import React, { useCallback } from 'react';
 import { getAccessSecurityGroupRole, securitygrouproleDelete } from '@/api';
 import { AppTable } from '@/components';
 import { ApiQueryKey, Navigation } from '@/constants';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import MoreActions from '@/components/MoreActions/MoreActions';
 import { useParams, useRouter } from 'next/navigation';
-import { error } from 'console';
 
 const SecurityGroupRole = () => {
     const queryClient = useQueryClient();

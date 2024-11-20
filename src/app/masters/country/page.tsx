@@ -1,7 +1,7 @@
 'use client';
 import { getCountry } from '@/api';
 import { AppTable } from '@/components';
-import { ApiEndpoints, ApiQueryKey } from '@/constants';
+import { ApiQueryKey } from '@/constants';
 import { useQuery } from '@tanstack/react-query';
 import React from 'react'
 
