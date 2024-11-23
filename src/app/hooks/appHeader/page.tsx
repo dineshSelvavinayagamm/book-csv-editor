@@ -1,7 +1,7 @@
 import { StorageService } from '@/services/StorageService';
 import { useCallback, useMemo } from 'react';
 
-export const useAppHeader = () => {
+const useAppHeader = () => {
   const updateTitle = useCallback((updatedTitle: string) => {
     StorageService.PageTitle.setValue(updatedTitle);
     window.dispatchEvent(new Event('storage'));
@@ -20,3 +20,5 @@ export const useAppHeader = () => {
 
   return values;
 };
+
+export { useAppHeader };
