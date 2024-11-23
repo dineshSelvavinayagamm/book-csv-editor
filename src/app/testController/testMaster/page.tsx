@@ -1,6 +1,6 @@
 'use client';
 import React, { useCallback, useEffect } from 'react';
-import { getTestMaster, labTestMasterDelete, labTestPackageDelete } from '@/api';
+import { getTestMaster, labTestMasterDelete } from '@/api';
 import { AppTable } from '@/components';
 import { ApiQueryKey, Navigation, PageTitle } from '@/constants';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
@@ -22,65 +22,68 @@ const TestMaster = () => {
     queryFn: getTestMaster,
   });
 
-  const { updateTitle } = useAppHeader(); 
+  const { updateTitle } = useAppHeader();
 
   useEffect(() => {
     updateTitle(PageTitle.TestMaster);
-  }, [updateTitle, PageTitle]);
+  }, [updateTitle]);
 
   const handleDeleteOnPress = async (id: string) => {
     try {
       await labTestMasterDelete(id);
       queryClient.invalidateQueries({ queryKey: [ApiQueryKey.testMaster] });
-
     } catch (error) {
       console.error('Error deleting user', error);
     }
   };
-  
+
   const handleDeleteClick = (id: string) => () => {
     handleDeleteOnPress(id);
   };
 
-const columns = [
-  {
-    accessor: 'testNameFld',
-    header: 'Test Name',
-  },
-  {
-    accessor: 'testIDFld',
-    header: 'Test ID',
-  },
-  {
-    accessor: 'testAliaseFld',
-    header: 'Aliase',
-  },
-  {
-    accessor: 'descriptionFld',
-    header: 'Description',
-  },
-  {
-    accessor: 'testParameterNameFld',
-    header: 'Test Parameter',
-  },
-  {
-    accessor: 'isActiveFld',
-    header: 'Active',
-  },
-  {
-    accessor: 'testCategoryFld',
-    header: 'Test Category',
-  },
-  {
-    accessor: 'actions',
-    header: 'Actions',
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    render: (row: any) => (
-      <MoreActions row={row} detailPath={Navigation.TestMaster} idField="oidPkFld" onDelete={handleDeleteClick(row.oidPkFld)}
-      />
-    ),
-  },
-];
+  const columns = [
+    {
+      accessor: 'testNameFld',
+      header: 'Test Name',
+    },
+    {
+      accessor: 'testIDFld',
+      header: 'Test ID',
+    },
+    {
+      accessor: 'testAliaseFld',
+      header: 'Aliase',
+    },
+    {
+      accessor: 'descriptionFld',
+      header: 'Description',
+    },
+    {
+      accessor: 'testParameterNameFld',
+      header: 'Test Parameter',
+    },
+    {
+      accessor: 'isActiveFld',
+      header: 'Active',
+    },
+    {
+      accessor: 'testCategoryFld',
+      header: 'Test Category',
+    },
+    {
+      accessor: 'actions',
+      header: 'Actions',
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      render: (row: any) => (
+        <MoreActions
+          row={row}
+          detailPath={Navigation.TestMaster}
+          idField="oidPkFld"
+          onDelete={handleDeleteClick(row.oidPkFld)}
+        />
+      ),
+    },
+  ];
 
   return (
     <div>

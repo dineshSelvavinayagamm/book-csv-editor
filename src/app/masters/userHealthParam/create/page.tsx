@@ -73,7 +73,7 @@ const UserHealthParamCreate: React.FC = () => {
 
   useEffect(() => {
     updateTitle(PageTitle.UserHealthParamCreate);
-  }, [updateTitle, PageTitle]);
+  }, [updateTitle]);
   const [userHealthParamForm, setUserHealthParamForm] = useState<UserHealthParamForm>(
     formJson.reduce<UserHealthParamForm>(
       (acc, field) => ({ ...acc, [field.name]: '' }),
@@ -127,7 +127,7 @@ const UserHealthParamCreate: React.FC = () => {
       setErrors(newErrors);
       return Object.keys(newErrors).length === 0;
     },
-    [userHealthParamForm],
+    [],
   );
 
   const fetchUserOptions = async () => {

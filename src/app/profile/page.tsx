@@ -5,7 +5,7 @@ import { getUserList, userDelete } from '@/api';
 import { AppTable } from '@/components';
 import { ApiQueryKey, Navigation } from '@/constants';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { useParams, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import MoreActions from '@/components/MoreActions/MoreActions';
 import { PageTitle } from '@/constants/PageTitle';
 import { useAppHeader } from '../hooks/appHeader/page';
@@ -52,6 +52,7 @@ const Profile = () => {
     {
       accessor: 'actions',
       header: 'Actions',
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       render: (row: any) => (
         <MoreActions
           row={row}

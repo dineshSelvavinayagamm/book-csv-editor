@@ -52,7 +52,7 @@ const SecurityRolePrivilegeCreate: React.FC = () => {
 
   useEffect(() => {
     updateTitle(PageTitle.RolePrivilegeCreate);
-  }, [updateTitle, PageTitle]);
+  }, [updateTitle]);
   const [errors, setErrors] = useState<Partial<SecurityRolePrivilegeForm>>({});
   const [roleOptions, setRoleOptions] = useState<{ label: string; value: string }[]>([]);
   const [privilegeOptions, setPrivilegeOptions] = useState<
@@ -62,6 +62,7 @@ const SecurityRolePrivilegeCreate: React.FC = () => {
   const [securityRolePrivilegeForm, setSecurityRolePrivilegeForm] = useState(
     formJson.reduce(
       (acc, field) => ({ ...acc, [field.name]: '' }),
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       {} as Record<string, any>,
     ),
   );
@@ -175,6 +176,7 @@ const SecurityRolePrivilegeCreate: React.FC = () => {
     setSecurityRolePrivilegeForm(
       formJson.reduce(
         (acc, field) => ({ ...acc, [field.name]: field.required ? '' : undefined }),
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         {} as Record<string, any>,
       ),
     );

@@ -19,7 +19,7 @@ const SecurityGroupUser = () => {
 
   useEffect(() => {
     updateTitle(PageTitle.UserGroup);
-  }, [updateTitle, PageTitle]);
+  }, [updateTitle]);
   const handleCreateClick = useCallback(() => {
     router.push(Navigation.createSecurityGroupUser);
   }, [router]);
@@ -56,6 +56,7 @@ const columns = [
     {
       accessor: 'actions',
       header: 'Actions',
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       render: (row: any) => (
         <MoreActions row={row} detailPath={Navigation.SecurityGroupUser} idField="oidPkFld" onDelete={handleDeleteClick(row.oidPkFld)}/> 
       ),

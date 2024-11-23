@@ -2,7 +2,7 @@
 import { useParams } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
 import React, { useEffect } from 'react';
-import { Spinner, Text } from '@radix-ui/themes';
+import { Spinner } from '@radix-ui/themes';
 import { AppTable } from '@/components/Table';
 import { securityGroupRoleDetail } from '@/api';
 import { useAppHeader } from '@/app/hooks/appHeader/page';
@@ -14,7 +14,7 @@ const SecurityGroupRoleDetailPage = () => {
 
   useEffect(() => {
     updateTitle(PageTitle.SecurityGroupRoleDetails);
-  }, [updateTitle, PageTitle]);
+  }, [updateTitle]);
   console.log('Fetching details for ID:', id);
 
   const { data, isLoading } = useQuery({
@@ -52,7 +52,6 @@ const SecurityGroupRoleDetailPage = () => {
       label: 'Security Group',
       value: securitygrouproleData?.securityGroup || 'N/A',
     },
-    
   ];
 
   return (

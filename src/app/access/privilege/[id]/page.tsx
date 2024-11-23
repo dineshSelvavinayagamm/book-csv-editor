@@ -2,7 +2,7 @@
 import { useParams } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
 import React, { useEffect } from 'react';
-import { Spinner, Text } from '@radix-ui/themes';
+import { Spinner } from '@radix-ui/themes';
 import { AppTable } from '@/components/Table';
 import { getPrivilegeDetail } from '@/api/User';
 import { useAppHeader } from '@/app/hooks/appHeader/page';
@@ -14,7 +14,7 @@ const PrivilegeDetailPage = () => {
 
   useEffect(() => {
     updateTitle(PageTitle.SecurityPrivilegeDetails);
-  }, [updateTitle, PageTitle]);
+  }, [updateTitle]);
 
   console.log('Fetching details for ID:', id);
 

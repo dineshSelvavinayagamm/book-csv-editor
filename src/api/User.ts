@@ -27,7 +27,9 @@ export interface SecurityRolePrivilegeForm {
   securityPrivilegeIdFKFld?: string;
 }
 export interface SecurityGroupRoleForm {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   securityRole?: number | any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   securityGroup?: number | any;
 }
 
@@ -44,7 +46,9 @@ export interface RoleForm {
 }
 
 export interface SecurityGroupUserForm {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   securityGroup?: number | any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   user?: number | any;
 }
 

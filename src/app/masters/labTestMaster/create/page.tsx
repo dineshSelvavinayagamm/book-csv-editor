@@ -4,12 +4,10 @@ import { useRouter } from 'next/navigation';
 import { useMutation } from '@tanstack/react-query';
 import { ApiQueryKey } from '@/constants/QueryKey';
 import { Navigation, PageTitle } from '@/constants';
-import { Field } from '@/components';
 import { Box } from '@radix-ui/themes';
 import { FieldAttributes, FieldType } from '@/types';
 import { z, ZodError } from 'zod';
 import { useAppHeader } from '@/app/hooks/appHeader/page';
-
 import * as Toast from '@radix-ui/react-toast';
 import {
   createLabTestMaster,
@@ -68,8 +66,9 @@ const LabTestMasterCreate: React.FC = () => {
   const router = useRouter();
   const { updateTitle } = useAppHeader();
 
-  useEffect(() => {}, [updateTitle, PageTitle]);
-
+  useEffect(() => {
+    updateTitle(PageTitle.LabTestMasterCreate);
+  }, [updateTitle]);
   const [testPriceForm, setTestPriceForm] = useState<TestPriceForm>(
     formJson.reduce<TestPriceForm>(
       (acc, field) => ({ ...acc, [field.name]: '' }),
@@ -167,7 +166,7 @@ const LabTestMasterCreate: React.FC = () => {
       setErrors(newErrors);
       return Object.keys(newErrors).length === 0;
     },
-    [labTestMasterForm],
+    [labTestMasterForm, testPriceForm],
   );
 
   useEffect(() => {
@@ -226,9 +225,9 @@ const LabTestMasterCreate: React.FC = () => {
 
         return (
           <Box key={fieldWithOptions.name} className="flex flex-col space-y-2">
-            <Field
+            {/* <Field
               {...{ ...fieldWithOptions, options: fieldWithOptions.options ?? [] }}
-            />
+            /> */}
             {errors[fieldWithOptions.name as keyof LabTestMasterForm] && (
               <p className="text-red-500 text-sm">
                 {errors[fieldWithOptions.name as keyof LabTestMasterForm]}

@@ -6,25 +6,22 @@ import { AppTable } from '@/components';
 import { ApiQueryKey, Navigation } from '@/constants';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import MoreActions from '@/components/MoreActions/MoreActions';
-import { useParams, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { PageTitle } from '@/constants/PageTitle';
 import { useAppHeader } from '@/app/hooks/appHeader/page';
 
 const Privilege = () => {
   const queryClient = useQueryClient();
   const router = useRouter();
-  const { id } = useParams();
   const { isPending, data, isFetching } = useQuery({
     queryKey: [ApiQueryKey.accessPrivilege],
     queryFn: getAccessPrivilege,
   });
-  const { updateTitle } = useAppHeader(); 
-
+  const { updateTitle } = useAppHeader();
 
   useEffect(() => {
     updateTitle(PageTitle.SecurityPrivilege);
   }, [updateTitle, PageTitle]);
-  
 
   const handleCreateClick = useCallback(() => {
     router.push(Navigation.CreatePrivilege);
@@ -50,6 +47,7 @@ const Privilege = () => {
     {
       accessor: 'actions',
       header: 'Actions',
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       render: (row: any) => (
         <MoreActions
           row={row}

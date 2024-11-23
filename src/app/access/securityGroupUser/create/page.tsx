@@ -55,6 +55,7 @@ const SecurityGroupUserCreatePage: React.FC = () => {
   const [securityGroupUserForm, setSecurityGroupUserForm] = useState(
     formJson.reduce(
       (acc, field) => ({ ...acc, [field.name]: '' }),
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       {} as Record<string, any>,
     ),
   );
@@ -167,6 +168,7 @@ const SecurityGroupUserCreatePage: React.FC = () => {
     setSecurityGroupUserForm(
       formJson.reduce(
         (acc, field) => ({ ...acc, [field.name]: field.required ? '' : undefined }),
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         {} as  Record<string, any>,
       ),
     );
