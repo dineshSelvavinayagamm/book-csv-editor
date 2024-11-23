@@ -2,36 +2,39 @@
 import { GroupUserCreate, GroupForm } from '@/api/User';
 import { Field } from '@/components';
 import { ApiQueryKey } from '@/constants/QueryKey';
-import { Navigation } from '@/constants';
+import { Navigation, PageTitle } from '@/constants';
 import { FieldAttributes, FieldType } from '@/types';
 import { Box } from '@radix-ui/themes';
 import { useMutation } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { z, ZodError } from 'zod';
+import { useAppHeader } from '@/app/hooks/appHeader/page';
+import * as Toast from '@radix-ui/react-toast';
+
 
 const formJson: FieldAttributes[] = [
   {
     name: 'nameFld',
     label: 'Group Name',
     type: FieldType.TEXT,
-    required: false,
-    schema: z.string(),
+    required: true,
+    schema: z.string().nonempty('Name is required'),
   },
 
   {
     name: 'descriptionFld',
     label: 'Description',
     type: FieldType.TEXT,
-    required: false,
-    schema: z.string(),
+    required: true,
+    schema: z.string().nonempty('Description is required'),
   },
 
   {
     name: 'isSystemDefinedFld',
     label: 'System Defined',
     type: FieldType.SELECT,
-    required: false,
+    required: true,
     options: [
       {
         label: 'Yes',
@@ -42,12 +45,17 @@ const formJson: FieldAttributes[] = [
         value: 'N',
       },
     ],
-    schema: z.string(),
+    schema: z.string().nonempty('System Defined is required'),
   },
 ];
 
 const GroupCreate: React.FC = () => {
   const router = useRouter();
+  const { updateTitle } = useAppHeader();
+
+  useEffect(() => {
+    updateTitle(PageTitle.SecurityGroupCreate);
+  }, [updateTitle, PageTitle]);
 
   const [GroupForm, setGroupForm] = useState<GroupForm>(
     formJson.reduce<GroupForm>(
@@ -57,21 +65,27 @@ const GroupCreate: React.FC = () => {
   );
 
   const [errors, setErrors] = useState<Partial<GroupForm>>({});
+  const [toastMessage, setToastMessage] = useState<{
+    text: string;
+    isSuccess: boolean;
+  } | null>(null);
 
   const createGroup = useMutation<void, Error, GroupForm>({
     mutationKey: [ApiQueryKey.GroupUserCreate],
     mutationFn: GroupUserCreate,
     onSuccess: () => {
+      setToastMessage({ text: 'Group created successfully!', isSuccess: true });
       router.push(Navigation.AccessGroup);
     },
     onError: (error) => {
+      setToastMessage({ text: error.message, isSuccess: false });
       console.error('Error creating user:', error);
     },
   });
 
   const validateForm = useCallback(
     (GroupForm: GroupForm) => {
-      const newErrors: Partial<GroupForm> = {};
+      const newErrors:  Partial<GroupForm>= {};
       formJson.forEach((field) => {
         try {
           field.schema.parse(GroupForm[field.name as keyof GroupForm]);
@@ -91,7 +105,17 @@ const GroupCreate: React.FC = () => {
     },
     [GroupForm],
   );
+  
+  useEffect(() => {
+    if (toastMessage) {
+      const timer = setTimeout(() => {
+        setToastMessage(null);
+      }, 60000);
 
+      return () => clearTimeout(timer);
+    }
+  }, [toastMessage]);
+  
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
@@ -118,8 +142,6 @@ const GroupCreate: React.FC = () => {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
-      <h2 className="text-2xl font-bold">Create New Group</h2>
-
       {formJson.map((field) => (
         <Box key={field.name} className="flex flex-col space-y-2">
           <Field {...field} />
@@ -147,6 +169,20 @@ const GroupCreate: React.FC = () => {
           Submit
         </button>
       </div>
+      
+      <Toast.Provider swipeDirection="right">
+        {toastMessage && (
+          <Toast.Root
+            className={`fixed bottom-4 right-4 p-4 rounded-md shadow-lg ${
+              toastMessage.isSuccess ? 'bg-green-500 text-white' : 'bg-red-500 text-white'
+            }`}
+            onOpenChange={() => setToastMessage(null)}
+          >
+            <Toast.Title>{toastMessage.text}</Toast.Title>
+          </Toast.Root>
+        )}
+        <Toast.Viewport />
+      </Toast.Provider>
     </form>
   );
 };

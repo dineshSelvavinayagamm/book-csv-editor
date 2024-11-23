@@ -3,10 +3,13 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useMutation } from '@tanstack/react-query';
 import { ApiQueryKey } from '@/constants/QueryKey';
-import { Navigation } from '@/constants';
+import { Navigation, PageTitle } from '@/constants';
+import { Field } from '@/components';
 import { Box } from '@radix-ui/themes';
 import { FieldAttributes, FieldType } from '@/types';
 import { z, ZodError } from 'zod';
+import { useAppHeader } from '@/app/hooks/appHeader/page';
+
 import * as Toast from '@radix-ui/react-toast';
 import {
   createLabTestMaster,
@@ -31,7 +34,7 @@ const formJson: FieldAttributes[] = [
     label: 'Test Name',
     type: FieldType.SELECT,
     required: false,
-    schema: z.string(),
+    schema: z.string().min(1, { message: 'Test Name is required' }),
     options: [],
   },
   {
@@ -39,7 +42,7 @@ const formJson: FieldAttributes[] = [
     label: 'Lab Name',
     type: FieldType.SELECT,
     required: false,
-    schema: z.string(),
+    schema: z.string().min(1, { message: 'Lab Name is required' }),
     options: [],
   },
   {
@@ -57,19 +60,22 @@ const formJson: FieldAttributes[] = [
         value: 'N',
       },
     ],
-    schema: z.string(),
+    schema: z.string().min(1, { message: 'Active is required' }),
   },
 ];
 
 const LabTestMasterCreate: React.FC = () => {
   const router = useRouter();
+  const { updateTitle } = useAppHeader();
+
+  useEffect(() => {}, [updateTitle, PageTitle]);
+
   const [testPriceForm, setTestPriceForm] = useState<TestPriceForm>(
     formJson.reduce<TestPriceForm>(
       (acc, field) => ({ ...acc, [field.name]: '' }),
       {} as TestPriceForm,
     ),
   );
-  console.log(testPriceForm);
   const [labTestMasterForm, setLabTestMasterForm] = useState<LabTestMasterForm>(
     formJson.reduce<LabTestMasterForm>(
       (acc, field) => ({ ...acc, [field.name]: '' }),
@@ -207,8 +213,6 @@ const LabTestMasterCreate: React.FC = () => {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
-      <h2 className="text-2xl font-bold">Create New Lab Test Master</h2>
-
       {formJson.map((field) => {
         const fieldWithOptions = {
           ...field,
@@ -222,9 +226,9 @@ const LabTestMasterCreate: React.FC = () => {
 
         return (
           <Box key={fieldWithOptions.name} className="flex flex-col space-y-2">
-            {/* <Field
+            <Field
               {...{ ...fieldWithOptions, options: fieldWithOptions.options ?? [] }}
-            /> */}
+            />
             {errors[fieldWithOptions.name as keyof LabTestMasterForm] && (
               <p className="text-red-500 text-sm">
                 {errors[fieldWithOptions.name as keyof LabTestMasterForm]}

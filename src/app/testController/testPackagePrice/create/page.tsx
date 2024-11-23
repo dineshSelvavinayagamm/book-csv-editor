@@ -3,12 +3,13 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useMutation } from '@tanstack/react-query';
 import { ApiQueryKey } from '@/constants/QueryKey';
-import { Navigation } from '@/constants';
+import { Navigation, PageTitle } from '@/constants';
 import { Field } from '@/components';
 import { Box } from '@radix-ui/themes';
 import { FieldAttributes, FieldType } from '@/types';
 import { z, ZodError } from 'zod';
 import { testPackagePriceCreate, TestPackagePriceForm, getTestPackage } from '@/api';
+import { useAppHeader } from '@/app/hooks/appHeader/page';
 import * as Toast from '@radix-ui/react-toast';
 
 const formJson: FieldAttributes[] = [
@@ -16,29 +17,29 @@ const formJson: FieldAttributes[] = [
     name: 'testPackageFKFld',
     label: 'Test Package',
     type: FieldType.SELECT,
-    required: false,
+    required: true,
     options: [],
-    schema: z.number().transform((val) => val.toString()),
+    schema: z.number().min(1, 'Test Package is required'),
   },
   {
     name: 'priceFld',
     label: 'Price',
     type: FieldType.TEXT,
     required: false,
-    schema: z.number().min(0),
+    schema: z.number().min(0, 'Price must be a positive number'),
   },
   {
     name: 'discountFld',
     label: 'Discount',
     type: FieldType.TEXT,
     required: false,
-    schema: z.number().min(0),
+    schema: z.number().min(0, 'Discount must be a positive number'),
   },
   {
     name: 'isActiveFld',
     label: 'Active',
     type: FieldType.SELECT,
-    required: false,
+    required: true,
     options: [
       {
         label: 'Active',
@@ -49,19 +50,24 @@ const formJson: FieldAttributes[] = [
         value: 'N',
       },
     ],
-    schema: z.string(),
+    schema: z.string().nonempty('Status must be selected'),
   },
   {
     name: 'custom1Fld',
     label: 'Remarks',
     type: FieldType.TEXT,
     required: false,
-    schema: z.string(),
+    schema: z.string().optional(),
   },
 ];
 
 const TestPackagePriceCreate: React.FC = () => {
   const router = useRouter();
+  const { updateTitle } = useAppHeader();
+
+  useEffect(() => {
+    updateTitle(PageTitle.TestPackagePriceCreate);
+  }, [updateTitle, PageTitle]);
 
   const [testPackagePriceForm, setTestPackagePriceForm] = useState<TestPackagePriceForm>(
     formJson.reduce<TestPackagePriceForm>(
@@ -188,8 +194,6 @@ const TestPackagePriceCreate: React.FC = () => {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
-      <h2 className="text-2xl font-bold">Create New Test Package Price</h2>
-
       {formJson.map((field) => {
         const fieldWithOptions =
           field.name === 'testPackageFKFld'

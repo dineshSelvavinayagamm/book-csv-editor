@@ -1,9 +1,11 @@
 'use client';
-import React from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { getBusinessEntityType } from '@/api';
 import { AppTable } from '@/components';
-import { ApiQueryKey } from '@/constants';
+import { ApiQueryKey, PageTitle } from '@/constants';
 import { useQuery } from '@tanstack/react-query';
+import { useRouter } from 'next/navigation';
+import { useAppHeader } from '@/app/hooks/appHeader/page';
 
 const columns = [
   {
@@ -29,12 +31,18 @@ const columns = [
 ];
 
 const BusinessEntity = () => {
+  const router = useRouter();
 
   const { isPending, data, isFetching } = useQuery({
     queryKey: [ApiQueryKey.businessEntity],
     queryFn: getBusinessEntityType,
   });
 
+  const { updateTitle } = useAppHeader(); 
+
+  useEffect(() => {
+    updateTitle(PageTitle.BusinessEntity);
+  }, [updateTitle, PageTitle]);
   return (
     <div>
       <AppTable

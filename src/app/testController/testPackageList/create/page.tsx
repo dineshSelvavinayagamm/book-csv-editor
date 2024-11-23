@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useMutation } from '@tanstack/react-query';
 import { ApiQueryKey } from '@/constants/QueryKey';
-import { Navigation } from '@/constants';
+import { Navigation, PageTitle } from '@/constants';
 import { Field } from '@/components';
 import { Box } from '@radix-ui/themes';
 import { FieldAttributes, FieldType } from '@/types';
@@ -15,15 +15,16 @@ import {
   getTestPackage,
   getTestMaster,
 } from '@/api';
+import { useAppHeader } from '@/app/hooks/appHeader/page';
 
-interface packageNameFormData {
+interface PackageNameFormData {
   oidPkFld: number;
   testPackageNameFld: string;
 }
 
-interface testNameData {
+interface TestNameData {
   oidPkFld: number;
-  testParameterNameFld: string; 
+  testNameFld: string;
 }
 
 const formJson: FieldAttributes[] = [
@@ -32,7 +33,7 @@ const formJson: FieldAttributes[] = [
     label: 'Test Package Name',
     type: FieldType.SELECT,
     required: false,
-    schema: z.string(),
+    schema: z.number().optional(),
     options: [],
   },
   {
@@ -40,7 +41,7 @@ const formJson: FieldAttributes[] = [
     label: 'Test Name',
     type: FieldType.SELECT,
     required: false,
-    schema: z.string(),
+    schema: z.number().optional(),
     options: [],
   },
   {
@@ -59,12 +60,25 @@ const formJson: FieldAttributes[] = [
     label: 'Remarks',
     type: FieldType.TEXT,
     required: false,
-    schema: z.string(),
+    schema: z.string().optional(),
   },
 ];
 
+const schema = z.object({
+  testPackageFKFld: z.number().min(1, { message: 'Test Package Name is required' }),
+  labTestFKFld: z.number().min(1, { message: 'Test Name is required' }),
+  isActiveFld: z.string().min(1, { message: 'Active status is required' }),
+  custom1Fld: z.string().optional(),
+});
+
 const TestPackageListCreate: React.FC = () => {
   const router = useRouter();
+  const { updateTitle } = useAppHeader();
+
+  useEffect(() => {
+    updateTitle(PageTitle.TestPackageListCreate);
+  }, [updateTitle, PageTitle]);
+
   const [packageNameOptions, setPackageNameOptions] = useState<
     { label: string; value: string }[]
   >([]);
@@ -102,33 +116,29 @@ const TestPackageListCreate: React.FC = () => {
   });
 
   const validateForm = (testPackageListForm: TestPackageListForm) => {
-    const newErrors: Partial<TestPackageListForm> = {};
-    formJson.forEach((field) => {
-      try {
-        field.schema.parse(testPackageListForm[field.name as keyof TestPackageListForm]);
-      } catch (error) {
-        if (error instanceof ZodError) {
-          const zodError: ZodError = error;
-          newErrors[field.name as keyof TestPackageListForm] = zodError.issues
-            .map((issue) => issue.message)
-            .join(', ');
-        } else {
-          newErrors[field.name as keyof TestPackageListForm] = 'Invalid value';
-        }
+    try {
+      schema.parse(testPackageListForm);
+      setErrors({});
+      return true;
+    } catch (error) {
+      if (error instanceof ZodError) {
+        const newErrors: Partial<TestPackageListForm> = {};
+        error.errors.forEach((err) => {
+          newErrors[err.path[0] as keyof TestPackageListForm] = err.message;
+        });
+        setErrors(newErrors);
       }
-    });
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+      return false;
+    }
   };
 
   const fetchPackageNameOptions = async () => {
     try {
       const { data } = await getTestPackage();
-      const options = data.map((user: packageNameFormData) => ({
+      const options = data.map((user: PackageNameFormData) => ({
         label: user.testPackageNameFld,
         value: user.oidPkFld.toString(),
       }));
-      console.log('User Options:', options);
       setPackageNameOptions(options);
     } catch (error) {
       console.error('Error fetching user list:', error);
@@ -138,14 +148,13 @@ const TestPackageListCreate: React.FC = () => {
   const fetchTestNameOptions = async () => {
     try {
       const { data } = await getTestMaster();
-      const options = data.map((group: testNameData) => ({
-        label: group.testParameterNameFld,
+      const options = data.map((group: TestNameData) => ({
+        label: group.testNameFld,
         value: group.oidPkFld.toString(),
       }));
-      console.log('Blood Group Options:', options);
       setTestNameOptions(options);
     } catch (error) {
-      console.error('Error fetching blood groups:', error);
+      console.error('Error fetching test names:', error);
     }
   };
 
@@ -174,7 +183,7 @@ const TestPackageListCreate: React.FC = () => {
 
       if (field.name === 'testPackageFKFld' || field.name === 'labTestFKFld') {
         updatedTestPackageListForm[field.name as keyof TestPackageListForm] = fieldValue
-          ? (fieldValue as string)
+          ? parseInt(fieldValue as string, 10)
           : undefined;
       } else {
         updatedTestPackageListForm[field.name as keyof TestPackageListForm] =
@@ -200,9 +209,14 @@ const TestPackageListCreate: React.FC = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
-      <h2 className="text-2xl font-bold">Create New Test Package List</h2>
-
+    <form
+      onSubmit={handleSubmit}
+      className="space-y-6"
+      aria-labelledby="test-package-list-form"
+    >
+      <h1 id="test-package-list-form" className="sr-only">
+        Create Test Package List
+      </h1>
       {formJson.map((field) => {
         const fieldWithOptions = {
           ...field,
@@ -218,9 +232,10 @@ const TestPackageListCreate: React.FC = () => {
           <Box key={fieldWithOptions.name} className="flex flex-col space-y-2">
             <Field
               {...{ ...fieldWithOptions, options: fieldWithOptions.options ?? [] }}
+              aria-describedby={`${fieldWithOptions.name}-error`}
             />
             {errors[fieldWithOptions.name as keyof TestPackageListForm] && (
-              <p className="text-red-500 text-sm">
+              <p id={`${fieldWithOptions.name}-error`} className="text-red-500 text-sm">
                 {errors[fieldWithOptions.name as keyof TestPackageListForm]}
               </p>
             )}
@@ -233,6 +248,7 @@ const TestPackageListCreate: React.FC = () => {
           type="button"
           onClick={handleCancel}
           className="bg-gray-300 text-black px-4 py-2 rounded-md"
+          aria-label="Cancel form"
         >
           Cancel
         </button>
@@ -240,6 +256,7 @@ const TestPackageListCreate: React.FC = () => {
           type="submit"
           className="bg-blue-500 text-white px-4 py-2 rounded-md"
           disabled={createUser.status === 'pending'}
+          aria-label="Submit form"
         >
           Submit
         </button>
@@ -247,15 +264,16 @@ const TestPackageListCreate: React.FC = () => {
       <Toast.Provider swipeDirection="right">
         {toastMessage && (
           <Toast.Root
-            className={`fixed bottom-4 right-4 p-4 rounded-md shadow-lg ${
-              toastMessage.isSuccess ? 'bg-green-500 text-white' : 'bg-red-500 text-white'
-            }`}
+            open={toastMessage !== null}
             onOpenChange={() => setToastMessage(null)}
+            className={`${
+              toastMessage.isSuccess ? 'bg-green-500' : 'bg-red-500'
+            } p-4 rounded-lg text-white`}
+            aria-live="assertive"
           >
-            <Toast.Title>{toastMessage.text}</Toast.Title>
+            {toastMessage.text}
           </Toast.Root>
         )}
-        <Toast.Viewport />
       </Toast.Provider>
     </form>
   );

@@ -1,11 +1,12 @@
 'use client';
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { getBloodGroup, labTestBloodGroupDelete } from '@/api';
 import { AppTable } from '@/components';
-import { ApiQueryKey, Navigation } from '@/constants';
+import { ApiQueryKey, Navigation, PageTitle } from '@/constants';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import MoreActions from '@/components/MoreActions/MoreActions';
 import { useParams, useRouter } from 'next/navigation';
+import { useAppHeader } from '@/app/hooks/appHeader/page';
 
 const BloodGroup = () => {
   const queryClient = useQueryClient();
@@ -13,6 +14,11 @@ const BloodGroup = () => {
   const router = useRouter();
 
   console.log('Fetching details for ID:', id);
+  const { updateTitle } = useAppHeader(); 
+
+  useEffect(() => {
+    updateTitle(PageTitle.BloodGroup);
+  }, [updateTitle, PageTitle]);
 
 
   const handleCreateClick = useCallback(() => {

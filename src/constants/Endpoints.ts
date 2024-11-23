@@ -1,4 +1,3 @@
-
 export const ApiEndpoints = {
   accessGroups: '/api/v1/access/securityGroupList',
   accessSecurityRolePrivilege: '/api/v1/access/securityRolePrivilege/all',

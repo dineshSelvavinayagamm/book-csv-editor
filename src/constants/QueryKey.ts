@@ -1,4 +1,3 @@
-
 export const ApiQueryKey = {
   accessGroups: 'accessGroups',
   accesssecurityRolePrivilege: 'accesssecurityRolePrivilege',

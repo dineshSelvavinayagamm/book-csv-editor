@@ -1,11 +1,12 @@
 'use client';
 import { getUserPreference, masterUserPreferenceDelete } from '@/api';
+import { useAppHeader } from '@/app/hooks/appHeader/page';
 import MoreActions from '@/components/MoreActions/MoreActions';
 import { AppTable } from '@/components/Table';
-import { ApiQueryKey, Navigation } from '@/constants';
+import { ApiQueryKey, Navigation, PageTitle } from '@/constants';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useParams, useRouter } from 'next/navigation';
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect } from 'react';
 
 const UserPreference = () => {
   const queryClient = useQueryClient();
@@ -33,6 +34,12 @@ const UserPreference = () => {
   const handleDeleteClick = (id: string) => () => {
     handleDeleteOnPress(id);
   };
+
+  const { updateTitle } = useAppHeader();
+
+  useEffect(() => {
+    updateTitle(PageTitle.UserPreference);
+  }, [updateTitle, PageTitle]);
 
   const columns = [
     {

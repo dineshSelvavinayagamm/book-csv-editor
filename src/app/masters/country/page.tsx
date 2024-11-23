@@ -1,9 +1,10 @@
 'use client';
 import { getCountry } from '@/api';
+import { useAppHeader } from '@/app/hooks/appHeader/page';
 import { AppTable } from '@/components';
-import { ApiQueryKey } from '@/constants';
+import { ApiEndpoints, ApiQueryKey, PageTitle } from '@/constants';
 import { useQuery } from '@tanstack/react-query';
-import React from 'react'
+import React, { useEffect } from 'react'
 
 const columns = [
     {
@@ -36,6 +37,12 @@ const Country = () => {
         queryKey: [ApiQueryKey.country],
         queryFn: getCountry
     })
+    const { updateTitle } = useAppHeader(); 
+
+
+  useEffect(() => {
+    updateTitle(PageTitle.Country);
+  }, [updateTitle, PageTitle]);
     return (
         <div>
           <AppTable

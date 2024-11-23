@@ -1,14 +1,14 @@
 'use client';
 
 import React from 'react';
-import { ValueIcon, AvatarIcon, StarFilledIcon, TargetIcon, DashboardIcon } from '@radix-ui/react-icons';
+import { ValueIcon, AvatarIcon, StarFilledIcon, TargetIcon } from '@radix-ui/react-icons';
 import { Navigation } from './Navigations';
 
 // icon will support both URL or children
 export const SIDE_BAR_MENU = [
   {
     title: 'Home',
-    icon: <DashboardIcon height={25} width={25} />,
+    icon: 'https://img.icons8.com/?size=100&id=83326&format=png&color=ffffff',
     items: [{ title: 'Dashboard', route: Navigation.Home, icon: <ValueIcon /> }],
   },
   {

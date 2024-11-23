@@ -1,9 +1,11 @@
 'use client';
 import { getZipCode } from '@/api/Masters';
+import { useAppHeader } from '@/app/hooks/appHeader/page';
 import { AppTable } from '@/components/Table';
+import { PageTitle } from '@/constants';
 import { ApiQueryKey } from '@/constants/QueryKey';
 import { useQuery } from '@tanstack/react-query';
-import React from 'react';
+import React, { useEffect } from 'react';
 
 const columns = [
   {
@@ -25,6 +27,12 @@ const ZipCode = () => {
     queryKey: [ApiQueryKey.zipcode],
     queryFn: getZipCode,
   });
+
+  const { updateTitle } = useAppHeader(); 
+
+  useEffect(() => {
+    updateTitle(PageTitle.ZipCode);
+  }, [updateTitle, PageTitle]);
   return (
     <div>
       <AppTable

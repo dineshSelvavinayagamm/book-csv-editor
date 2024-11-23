@@ -3,13 +3,14 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useMutation } from '@tanstack/react-query';
 import { ApiQueryKey } from '@/constants/QueryKey';
-import { Navigation } from '@/constants';
+import { Navigation, PageTitle } from '@/constants';
 import { Field } from '@/components';
 import { Box } from '@radix-ui/themes';
 import { FieldAttributes, FieldType } from '@/types';
 import { z, ZodError } from 'zod';
 import * as Toast from '@radix-ui/react-toast';
 import { testPriceCreate, TestPriceForm, getTestMaster } from '@/api/Test';
+import { useAppHeader } from '@/app/hooks/appHeader/page';
 
 interface TestMasterData {
   oidPkFld: number;
@@ -67,6 +68,11 @@ const initialFormJson: FieldAttributes[] = [
 
 const TestPriceCreate: React.FC = () => {
   const router = useRouter();
+  const { updateTitle } = useAppHeader();
+
+  useEffect(() => {
+    updateTitle(PageTitle.TestPriceCreate);
+  }, [updateTitle, PageTitle]);
   const [testPriceForm, setTestPriceForm] = useState<TestPriceForm>(
     initialFormJson.reduce<TestPriceForm>(
       (acc, field) => ({ ...acc, [field.name]: '' }),
@@ -180,8 +186,6 @@ const TestPriceCreate: React.FC = () => {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
-      <h2 className="text-2xl font-bold">Create New Test Price</h2>
-
       {initialFormJson.map((field) => {
         const fieldWithOptions =
           field.name === 'testNameFKFld' ? { ...field, options: testOptions } : field;

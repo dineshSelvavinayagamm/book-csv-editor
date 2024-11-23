@@ -31,8 +31,9 @@ export interface BaseFieldAttributes {
   type: FieldType;
   required?: boolean;
   gridWidth?: number;
-  options?: Array<{ label: string; value: string  }>; // Ensure options are defined here
-  schema: z.ZodType;
+  options?: { label: string; value: string | number }[];
+  schema: z.ZodType<any>;
+  value?: string;
 }
 
 interface InputFieldAttributes extends BaseFieldAttributes {

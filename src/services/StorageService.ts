@@ -22,4 +22,5 @@ class SecureStorage {
 
 export const StorageService = {
   authToken: new SecureStorage('authToken'),
+  PageTitle: new SecureStorage('PageTitle'),
 };

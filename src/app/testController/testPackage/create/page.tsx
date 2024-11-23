@@ -3,28 +3,29 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useMutation } from '@tanstack/react-query';
 import { ApiQueryKey } from '@/constants/QueryKey';
-import { Navigation } from '@/constants';
+import { Navigation, PageTitle } from '@/constants';
 import { Field } from '@/components';
 import { Box } from '@radix-ui/themes';
 import { FieldAttributes, FieldType } from '@/types';
 import { z, ZodError } from 'zod';
 import { testPackageCreate, TestPackageForm } from '@/api';
 import * as Toast from '@radix-ui/react-toast';
+import { useAppHeader } from '@/app/hooks/appHeader/page';
 
 const formJson: FieldAttributes[] = [
   {
     name: 'testPackageNameFld',
     label: 'Test Package Name',
     type: FieldType.TEXT,
-    required: false,
-    schema: z.string(),
+    required: true,
+    schema: z.string().min(1, 'Test Package Name is required'),
   },
   {
     name: 'testPackageIDFld',
     label: 'Test Package ID',
     type: FieldType.TEXT,
-    required: false,
-    schema: z.string(),
+    required: true,
+    schema: z.string().min(1, 'Test Package ID is required'),
   },
   {
     name: 'parameterAliaseFld',
@@ -42,7 +43,7 @@ const formJson: FieldAttributes[] = [
   },
   {
     name: 'isActiveFld',
-    label: 'Active',
+    label: 'Is Active',
     type: FieldType.SELECT,
     required: false,
     options: [
@@ -55,7 +56,9 @@ const formJson: FieldAttributes[] = [
         value: 'N',
       },
     ],
-    schema: z.string(),
+    schema: z.enum(['Y', 'N'], {
+      errorMap: () => ({ message: 'Active status must be selected' }),
+    }),
   },
   {
     name: 'custom1Fld',
@@ -68,6 +71,11 @@ const formJson: FieldAttributes[] = [
 
 const TestPackageCreate: React.FC = () => {
   const router = useRouter();
+  const { updateTitle } = useAppHeader();
+
+  useEffect(() => {
+    updateTitle(PageTitle.TestPackageCreate);
+  }, [updateTitle]);
 
   const [testPackageForm, setTestPackageForm] = useState<TestPackageForm>(
     formJson.reduce<TestPackageForm>(
@@ -95,28 +103,25 @@ const TestPackageCreate: React.FC = () => {
     },
   });
 
-  const validateForm = useCallback(
-    (testPackageForm: TestPackageForm) => {
-      const newErrors: Partial<TestPackageForm> = {};
-      formJson.forEach((field) => {
-        try {
-          field.schema.parse(testPackageForm[field.name as keyof TestPackageForm]);
-        } catch (error) {
-          if (error instanceof ZodError) {
-            const zodError: ZodError = error;
-            newErrors[field.name as keyof TestPackageForm] = zodError.issues
-              .map((issue) => issue.message)
-              .join(', ');
-          } else {
-            newErrors[field.name as keyof TestPackageForm] = 'Invalid value';
-          }
+  const validateForm = useCallback((testPackageForm: TestPackageForm) => {
+    const newErrors: Partial<TestPackageForm> = {};
+    formJson.forEach((field) => {
+      try {
+        field.schema.parse(testPackageForm[field.name as keyof TestPackageForm]);
+      } catch (error) {
+        if (error instanceof ZodError) {
+          const zodError: ZodError = error;
+          newErrors[field.name as keyof TestPackageForm] = zodError.issues
+            .map((issue) => issue.message)
+            .join(', ');
+        } else {
+          newErrors[field.name as keyof TestPackageForm] = 'Invalid value';
         }
-      });
-      setErrors(newErrors);
-      return Object.keys(newErrors).length === 0;
-    },
-    [testPackageForm],
-  );
+      }
+    });
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  }, []);
 
   useEffect(() => {
     if (toastMessage) {
@@ -137,7 +142,7 @@ const TestPackageCreate: React.FC = () => {
         field.name,
       ) as string;
     });
-    setTestPackageForm({ ...updatedTestPackageForm });
+    setTestPackageForm(updatedTestPackageForm);
     if (!validateForm(updatedTestPackageForm)) return;
     createUser.mutate(updatedTestPackageForm);
   };
@@ -145,7 +150,7 @@ const TestPackageCreate: React.FC = () => {
   const handleCancel = () => {
     setTestPackageForm(
       formJson.reduce(
-        (acc, field) => ({ ...acc, [field.name]: field.required ? '' : undefined }),
+        (acc, field) => ({ ...acc, [field.name]: '' }),
         {} as TestPackageForm,
       ),
     );
@@ -154,11 +159,12 @@ const TestPackageCreate: React.FC = () => {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
-      <h2 className="text-2xl font-bold">Create New Test Package Price</h2>
-
       {formJson.map((field) => (
         <Box key={field.name} className="flex flex-col space-y-2">
-          <Field {...field} />
+          <Field
+            {...field}
+            value={testPackageForm[field.name as keyof TestPackageForm]}
+          />
           {errors[field.name as keyof TestPackageForm] && (
             <p className="text-red-500 text-sm">
               {errors[field.name as keyof TestPackageForm]}

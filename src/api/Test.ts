@@ -36,7 +36,7 @@ export interface TestPackageForm {
 }
 
 export interface TestMasterForm {
-  testParameterNameFld?: string;
+  // testParameterNameFld?: string;
   testNameFld?: string;
   testIDFld?: string;
   testAliaseFld?: string;

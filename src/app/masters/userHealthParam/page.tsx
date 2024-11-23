@@ -3,10 +3,11 @@ import { getUserHealthParam, masterUserHealthParamDelete } from '@/api/Masters';
 import { AppTable } from '@/components/Table';
 import { ApiQueryKey } from '@/constants/QueryKey';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { Navigation } from '@/constants';
+import { Navigation, PageTitle } from '@/constants';
 import MoreActions from '@/components/MoreActions/MoreActions';
+import { useAppHeader } from '@/app/hooks/appHeader/page';
 
 const UserHealthParam = () => {
   const queryClient = useQueryClient();
@@ -35,6 +36,11 @@ const UserHealthParam = () => {
     handleDeleteOnPress(id);
   };
 
+  const { updateTitle } = useAppHeader(); 
+
+  useEffect(() => {
+    updateTitle(PageTitle.UserHealthParam);
+  }, [updateTitle, PageTitle]);
   const columns = [
     {
       accessor: 'userName',

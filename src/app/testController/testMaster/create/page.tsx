@@ -3,18 +3,29 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useMutation } from '@tanstack/react-query';
 import { ApiQueryKey } from '@/constants/QueryKey';
-import { Navigation } from '@/constants';
+import { Navigation, PageTitle } from '@/constants';
 import { Field } from '@/components';
 import { Box } from '@radix-ui/themes';
 import { FieldAttributes, FieldType } from '@/types';
 import { z, ZodError } from 'zod';
 import { getTestParameterMaster, testMasterCreate, TestMasterForm } from '@/api/Test';
 import * as Toast from '@radix-ui/react-toast';
+import { useAppHeader } from '@/app/hooks/appHeader/page';
 
 interface TestMasterData {
   oidPkFld: number;
   testParameterNameFld: string;
 }
+
+const testMasterSchema = z.object({
+  testNameFld: z.string().nonempty('Test Name is required'),
+  testIDFld: z.string().nonempty('Test ID is required'),
+  testAliaseFld: z.string().optional(),
+  descriptionFld: z.string().optional(),
+  // testParameterMasterFKFld: z.string().min(1, 'Test Parameter Name is required'),
+  isActiveFld: z.string().optional(),
+  testCategoryFld: z.string().optional(),
+});
 
 const formJson: FieldAttributes[] = [
   {
@@ -22,37 +33,37 @@ const formJson: FieldAttributes[] = [
     label: 'Test Name',
     type: FieldType.TEXT,
     required: false,
-    schema: z.string(),
+    schema: z.string().optional(),
   },
   {
     name: 'testIDFld',
     label: 'Test ID',
     type: FieldType.TEXT,
     required: false,
-    schema: z.string(),
+    schema: z.string().optional(),
   },
   {
     name: 'testAliaseFld',
     label: 'Test Aliase',
     type: FieldType.TEXT,
     required: false,
-    schema: z.string(),
+    schema: z.string().optional(),
   },
   {
     name: 'descriptionFld',
     label: 'Description',
     type: FieldType.TEXT,
     required: false,
-    schema: z.string(),
+    schema: z.string().optional(),
   },
-  {
-    name: 'testParameterMasterFKFld',
-    label: 'Test  Parameter Name',
-    type: FieldType.SELECT,
-    required: true,
-    options: [],
-    schema: z.any(),
-  },
+  // {
+  //   name: 'testParameterMasterFKFld',
+  //   label: 'Test Parameter Name',
+  //   type: FieldType.SELECT,
+  //   required: true,
+  //   options: [],
+  //   schema: z.string().min(1, 'Test Parameter Name is required'),
+  // },
   {
     name: 'isActiveFld',
     label: 'Active',
@@ -68,19 +79,25 @@ const formJson: FieldAttributes[] = [
         value: 'N',
       },
     ],
-    schema: z.string(),
+    schema: z.string().optional(),
   },
   {
     name: 'testCategoryFld',
     label: 'Test Category',
     type: FieldType.TEXT,
     required: false,
-    schema: z.any(),
+    schema: z.string().optional(),
   },
 ];
 
 const TestMasterCreate: React.FC = () => {
   const router = useRouter();
+
+  const { updateTitle } = useAppHeader();
+
+  useEffect(() => {
+    updateTitle(PageTitle.CreateTestMaster);
+  }, [updateTitle, PageTitle]);
 
   const [testMasterForm, setTestMasterForm] = useState<TestMasterForm>(
     formJson.reduce<TestMasterForm>(
@@ -111,20 +128,16 @@ const TestMasterCreate: React.FC = () => {
 
   const validateForm = useCallback((testMasterForm: TestMasterForm) => {
     const newErrors: Partial<TestMasterForm> = {};
-    formJson.forEach((field) => {
-      try {
-        field.schema.parse(testMasterForm[field.name as keyof TestMasterForm]);
-      } catch (error) {
-        if (error instanceof ZodError) {
-          const zodError: ZodError = error;
-          newErrors[field.name as keyof TestMasterForm] = zodError.issues
-            .map((issue) => issue.message)
-            .join(', ');
-        } else {
-          newErrors[field.name as keyof TestMasterForm] = 'Invalid value';
-        }
+    try {
+      // Validate the form using Zod schema
+      testMasterSchema.parse(testMasterForm);
+    } catch (error) {
+      if (error instanceof ZodError) {
+        error.errors.forEach((issue) => {
+          newErrors[issue.path[0] as keyof TestMasterForm] = issue.message;
+        });
       }
-    });
+    }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   }, []);
@@ -140,7 +153,6 @@ const TestMasterCreate: React.FC = () => {
         setTestOptions(options);
         setTestMasterForm((prev) => ({
           ...prev,
-          testNameFKFld: options.length > 0 ? options[0].value : '',
         }));
       } catch (error) {
         console.error('Error fetching test master data:', error);
@@ -167,14 +179,9 @@ const TestMasterCreate: React.FC = () => {
 
     formJson.forEach((field) => {
       const fieldValue = formData.get(field.name);
-
-      if (field.name === 'testCategoryFld') {
-        updatedTestMasterForm[field.name as keyof TestMasterForm] = fieldValue
-          ? parseInt(fieldValue as string)
-          : undefined;
-      } else {
-        updatedTestMasterForm[field.name as keyof TestMasterForm] = fieldValue as string;
-      }
+      updatedTestMasterForm[field.name as keyof TestMasterForm] = fieldValue
+        ? (fieldValue as string)
+        : '';
     });
 
     setTestMasterForm({ ...updatedTestMasterForm });
@@ -196,8 +203,6 @@ const TestMasterCreate: React.FC = () => {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
-      <h2 className="text-2xl font-bold">Create New Test Master</h2>
-
       {formJson.map((field) => {
         const fieldWithOptions =
           field.name === 'testParameterMasterFKFld'

@@ -3,13 +3,14 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useMutation } from '@tanstack/react-query';
 import { ApiQueryKey } from '@/constants/QueryKey';
-import { Navigation } from '@/constants';
+import { Navigation, PageTitle } from '@/constants';
 import { Field } from '@/components';
 import { Box } from '@radix-ui/themes';
 import { FieldAttributes, FieldType } from '@/types';
 import { z, ZodError } from 'zod';
 import { getUserList, userPreferenceCreate, UserPreferenceForm } from '@/api';
 import * as Toast from '@radix-ui/react-toast';
+import { useAppHeader } from '@/app/hooks/appHeader/page';
 
 interface UserFormData {
   oidPkFld: number;
@@ -23,30 +24,35 @@ const formJson: FieldAttributes[] = [
     type: FieldType.SELECT,
     required: false,
     options: [],
-    schema: z.number().nonnegative({ message: 'Please select a valid user.' }),
+    schema: z.number().int().min(1, { message: 'Lab Name is required' }),
   },
   {
     name: 'preferenceTypeFld',
     label: 'Preference Type',
     type: FieldType.TEXT,
     required: false,
-    schema: z.number(),
+    schema: z.number().min(1, { message: 'Preference Type is required' }),
   },
   {
     name: 'preferenceValueFld',
     label: 'Preference Value',
     type: FieldType.TEXT,
-    required: true,
-    schema: z.number(),
+    required: false,
+    schema: z.number().min(1, { message: 'Preference Value is required' }),
   },
 ];
 
 const UserPreferenceCreate: React.FC = () => {
   const router = useRouter();
+  const { updateTitle } = useAppHeader();
+
+  useEffect(() => {
+    updateTitle(PageTitle.UserPreferenceCreate);
+  }, [updateTitle, PageTitle]);
+ 
   const [userPreferenceForm, setUserPreferenceForm] = useState(
     formJson.reduce(
       (acc, field) => ({ ...acc, [field.name]: '' }),
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       {} as Record<string, any>,
     ),
   );
@@ -124,13 +130,17 @@ const UserPreferenceCreate: React.FC = () => {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const updatedUserPreferenceForm: Record<string, any> = {};
 
     formJson.forEach((field) => {
       const value = formData.get(field.name);
-      updatedUserPreferenceForm[field.name] =
-        field.schema === z.number() ? Number(value) : value;
+      if (field.name === 'userIdFKFld' || field.name === 'preferenceTypeFld' || field.name === 'preferenceValueFld') {
+        const parsedValue = value ? parseInt(value as string, 10) : NaN;
+        updatedUserPreferenceForm[field.name as keyof UserPreferenceForm] = 
+        isNaN(parsedValue) ? 0 : parsedValue;  
+    } else {
+      updatedUserPreferenceForm[field.name as keyof UserPreferenceForm] = value as string;
+    }
     });
 
     const preferenceTypeFld = formData.get('preferenceTypeFld');
@@ -153,7 +163,6 @@ const UserPreferenceCreate: React.FC = () => {
     setUserPreferenceForm(
       formJson.reduce(
         (acc, field) => ({ ...acc, [field.name]: field.required ? '' : undefined }),
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         {} as Record<string, any>,
       ),
     );
@@ -162,7 +171,6 @@ const UserPreferenceCreate: React.FC = () => {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
-      <h2 className="text-2xl font-bold">Create New User Preference</h2>
       {formJson.map((field) => {
         const fieldWithOptions = {
           ...field,

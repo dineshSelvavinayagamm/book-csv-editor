@@ -1,14 +1,21 @@
 'use client';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useCallback } from 'react';
 import { getAccessGroup, groupDelete } from '@/api';
-import { ApiQueryKey, Navigation } from '@/constants';
+import { ApiQueryKey, Navigation, PageTitle } from '@/constants';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { AppTable } from '@/components';
 import MoreActions from '@/components/MoreActions/MoreActions';
 import { useRouter } from 'next/navigation';
+import { useAppHeader } from '@/app/hooks/appHeader/page';
 
 const Group = () => {
+  const { updateTitle } = useAppHeader();
+
+  useEffect(() => {
+    updateTitle(PageTitle.SecurityGroup);
+  }, [updateTitle, PageTitle]);
+
   const queryClient = useQueryClient();
   const router = useRouter();
   const { isPending, data, isFetching } = useQuery({

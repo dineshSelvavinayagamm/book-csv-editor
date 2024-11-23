@@ -1,11 +1,12 @@
 'use client';
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { getTestParameterMaster, labTestParameterMasterDelate } from '@/api';
 import { AppTable } from '@/components';
-import { ApiQueryKey, Navigation } from '@/constants';
+import { ApiQueryKey, Navigation, PageTitle } from '@/constants';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import MoreActions from '@/components/MoreActions/MoreActions';
 import { useParams, useRouter } from 'next/navigation';
+import { useAppHeader } from '@/app/hooks/appHeader/page';
 
 const TestParameterMaster = () => {
   const queryClient = useQueryClient();
@@ -31,6 +32,12 @@ const TestParameterMaster = () => {
       console.error('Error deleting user', error);
     }
   };
+
+  const { updateTitle } = useAppHeader(); 
+
+  useEffect(() => {
+    updateTitle(PageTitle.TestParameterMaster);
+  }, [updateTitle, PageTitle]);
 
   const handleDeleteClick = (id: string) => () => {
     handleDeleteOnPress(id);

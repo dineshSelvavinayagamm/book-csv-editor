@@ -3,49 +3,54 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useMutation } from '@tanstack/react-query';
 import { ApiQueryKey } from '@/constants/QueryKey';
-import { Navigation } from '@/constants';
+import { Navigation, PageTitle } from '@/constants';
 import { Field } from '@/components';
 import { Box } from '@radix-ui/themes';
 import { FieldAttributes, FieldType } from '@/types';
 import { z, ZodError } from 'zod';
-import {
-  testParameterMasterCreate,
-  TestParameterMasterForm,
-} from '@/api';
+import { testParameterMasterCreate, TestParameterMasterForm } from '@/api';
+import { useAppHeader } from '@/app/hooks/appHeader/page';
 import * as Toast from '@radix-ui/react-toast';
+
+const testParameterSchema = z.object({
+  testParameterNameFld: z.string().nonempty('Test Parameter Name is required'),
+  testParameterIDFld: z.string().nonempty('Test Parameter ID is required'),
+  parameterAliaseFld: z.string().nonempty('Parameter Aliase is required'),
+  descriptionFld: z.string().nonempty('Description is required'),
+  isActiveFld: z.enum(['Y', 'N'], {
+    errorMap: () => ({ message: 'Active status must be selected' }),
+  }),
+  custom1Fld: z.string().optional(),
+});
 
 const formJson: FieldAttributes[] = [
   {
     name: 'testParameterNameFld',
     label: 'Test Parameter Name',
     type: FieldType.TEXT,
-    required: false,
-    schema: z.string(),
+    schema: z.string().nonempty('Test Parameter Name is required'),
   },
   {
     name: 'testParameterIDFld',
     label: 'Test Parameter ID',
     type: FieldType.TEXT,
-    required: false,
-    schema: z.string(),
+    schema: z.string().nonempty('Test Parameter ID is required'),
   },
   {
     name: 'parameterAliaseFld',
     label: 'Parameter Aliase',
     type: FieldType.TEXT,
-    required: false,
-    schema: z.string(),
+    schema: z.string().nonempty('Parameter Aliase is required'),
   },
   {
     name: 'descriptionFld',
     label: 'Description',
     type: FieldType.TEXT,
-    required: false,
-    schema: z.string(),
+    schema: z.string().nonempty('Description is required'),
   },
   {
     name: 'isActiveFld',
-    label: 'Active',
+    label: 'Is Active',
     type: FieldType.SELECT,
     required: false,
     options: [
@@ -58,27 +63,35 @@ const formJson: FieldAttributes[] = [
         value: 'N',
       },
     ],
-    schema: z.string(),
+    schema: z.enum(['Y', 'N'], {
+      errorMap: () => ({ message: 'Active status must be selected' }),
+    }),
   },
   {
     name: 'custom1Fld',
     label: 'Remarks',
     type: FieldType.TEXT,
-    required: false,
-    schema: z.string(),
+    schema: z.string().optional(),
   },
 ];
 
 const TestParameterMasterCreate: React.FC = () => {
   const router = useRouter();
+  const { updateTitle } = useAppHeader();
+
+  useEffect(() => {
+    updateTitle(PageTitle.TestParameterMasterCreate);
+  }, [updateTitle]);
 
   const [testParameterMasterForm, setTestParameterMasterForm] =
-    useState<TestParameterMasterForm>(
-      formJson.reduce<TestParameterMasterForm>(
-        (acc, field) => ({ ...acc, [field.name]: '' }),
-        {} as TestParameterMasterForm,
-      ),
-    );
+    useState<TestParameterMasterForm>({
+      testParameterNameFld: '',
+      testParameterIDFld: '',
+      parameterAliaseFld: '',
+      descriptionFld: '',
+      isActiveFld: '',
+      custom1Fld: '',
+    });
 
   const [errors, setErrors] = useState<Partial<TestParameterMasterForm>>({});
   const [toastMessage, setToastMessage] = useState<{
@@ -91,7 +104,7 @@ const TestParameterMasterCreate: React.FC = () => {
     mutationFn: testParameterMasterCreate,
     onSuccess: () => {
       setToastMessage({
-        text: 'test Parameter Master created successfully!',
+        text: 'Test Parameter Master created successfully!',
         isSuccess: true,
       });
       router.push(Navigation.TestParameterMaster);
@@ -102,36 +115,28 @@ const TestParameterMasterCreate: React.FC = () => {
     },
   });
 
-  const validateForm = useCallback(
-    (testParameterMasterForm: TestParameterMasterForm) => {
-      const newErrors: Partial<TestParameterMasterForm> = {};
-      formJson.forEach((field) => {
-        try {
-          field.schema.parse(
-            testParameterMasterForm[field.name as keyof TestParameterMasterForm],
-          );
-        } catch (error) {
-          if (error instanceof ZodError) {
-            const zodError: ZodError = error;
-            newErrors[field.name as keyof TestParameterMasterForm] = zodError.issues
-              .map((issue) => issue.message)
-              .join(', ');
-          } else {
-            newErrors[field.name as keyof TestParameterMasterForm] = 'Invalid value';
-          }
-        }
-      });
-      setErrors(newErrors);
-      return Object.keys(newErrors).length === 0;
-    },
-    [testParameterMasterForm],
-  );
+  const validateForm = useCallback((formData: TestParameterMasterForm) => {
+    try {
+      testParameterSchema.parse(formData);
+      setErrors({});
+      return true;
+    } catch (error) {
+      if (error instanceof ZodError) {
+        const newErrors: Partial<TestParameterMasterForm> = {};
+        error.errors.forEach((issue) => {
+          newErrors[issue.path[0] as keyof TestParameterMasterForm] = issue.message;
+        });
+        setErrors(newErrors);
+      }
+      return false;
+    }
+  }, []);
 
   useEffect(() => {
     if (toastMessage) {
       const timer = setTimeout(() => {
         setToastMessage(null);
-      }, 60000);
+      }, 6000);
 
       return () => clearTimeout(timer);
     }
@@ -140,31 +145,31 @@ const TestParameterMasterCreate: React.FC = () => {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
-    const updatedTestPackageForm = { ...testParameterMasterForm };
-    formJson.forEach((field) => {
-      updatedTestPackageForm[field.name as keyof TestParameterMasterForm] = formData.get(
-        field.name,
-      ) as string;
-    });
-    setTestParameterMasterForm({ ...updatedTestPackageForm });
-    if (!validateForm(updatedTestPackageForm)) return;
-    createUser.mutate(updatedTestPackageForm);
+    const updatedForm = Object.fromEntries(
+      formJson.map((field) => [field.name, formData.get(field.name)]),
+    ) as TestParameterMasterForm;
+
+    setTestParameterMasterForm(updatedForm);
+
+    if (!validateForm(updatedForm)) return;
+
+    createUser.mutate(updatedForm);
   };
 
   const handleCancel = () => {
-    setTestParameterMasterForm(
-      formJson.reduce(
-        (acc, field) => ({ ...acc, [field.name]: field.required ? '' : undefined }),
-        {} as TestParameterMasterForm,
-      ),
-    );
+    setTestParameterMasterForm({
+      testParameterNameFld: '',
+      testParameterIDFld: '',
+      parameterAliaseFld: '',
+      descriptionFld: '',
+      isActiveFld: '',
+      custom1Fld: '',
+    });
     router.push(Navigation.TestParameterMaster);
   };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
-      <h2 className="text-2xl font-bold">Create New Test Parameter Master</h2>
-
       {formJson.map((field) => (
         <Box key={field.name} className="flex flex-col space-y-2">
           <Field {...field} />

@@ -1,13 +1,19 @@
 'use client';
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { getAccessRole, roleDelete } from '@/api';
 import { AppTable } from '@/components';
-import { ApiQueryKey, Navigation } from '@/constants';
+import { ApiQueryKey, Navigation, PageTitle } from '@/constants';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import MoreActions from '@/components/MoreActions/MoreActions';
 import { useRouter } from 'next/navigation';
+import { useAppHeader } from '@/app/hooks/appHeader/page';
 
 const Roles = () => {
+  const { updateTitle } = useAppHeader();
+
+  useEffect(() => {
+    updateTitle(PageTitle.SecurityRole);
+  }, [updateTitle, PageTitle]);
   const queryClient = useQueryClient();
 
   const router = useRouter();

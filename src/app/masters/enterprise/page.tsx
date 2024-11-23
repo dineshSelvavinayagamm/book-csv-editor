@@ -1,11 +1,12 @@
 'use client';
 import { getEnterprise } from '@/api/Masters';
+import { useAppHeader } from '@/app/hooks/appHeader/page';
 import MoreActions from '@/components/MoreActions/MoreActions';
 import { AppTable } from '@/components/Table';
-import { Navigation } from '@/constants';
+import { Navigation, PageTitle } from '@/constants';
 import { ApiQueryKey } from '@/constants/QueryKey';
 import { useQuery } from '@tanstack/react-query';
-import React from 'react';
+import React, { useEffect } from 'react';
 
 const columns = [
   {
@@ -35,6 +36,11 @@ const Enterprise = () => {
     queryKey: [ApiQueryKey.enterprise],
     queryFn: getEnterprise,
   });
+  const { updateTitle } = useAppHeader(); 
+
+  useEffect(() => {
+    updateTitle(PageTitle.Enterprice);
+  }, [updateTitle, PageTitle]);
   return (
     <div>
       <AppTable

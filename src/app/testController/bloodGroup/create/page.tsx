@@ -3,40 +3,46 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useMutation } from '@tanstack/react-query';
 import { ApiQueryKey } from '@/constants/QueryKey';
-import { Navigation } from '@/constants';
+import { Navigation, PageTitle } from '@/constants';
 import { Field } from '@/components';
 import { Box } from '@radix-ui/themes';
 import { FieldAttributes, FieldType } from '@/types';
 import { z, ZodError } from 'zod';
 import { bloodGroupCreate, BloodGroupForm } from '@/api/Test';
 import * as Toast from '@radix-ui/react-toast';
+import { useAppHeader } from '@/app/hooks/appHeader/page';
 
 const formJson: FieldAttributes[] = [
   {
     name: 'shortNameFld',
     label: 'Short Name',
     type: FieldType.TEXT,
-    required: false,
-    schema: z.string(),
+    required: true,
+    schema: z.string().min(1, 'Short Name is required.'),
   },
   {
     name: 'longName_Fld',
     label: 'Long Name',
     type: FieldType.TEXT,
-    required: false,
-    schema: z.string(),
+    required: true,
+    schema: z.string().min(1, 'Long Name is required.'),
   },
   {
     name: 'aliasFld',
-    label: 'alias',
+    label: 'Alias',
     type: FieldType.TEXT,
     required: false,
-    schema: z.string(),
+    schema: z.string().optional(),
   },
 ];
 
 const BloodGroupCreate: React.FC = () => {
   const router = useRouter();
+  const { updateTitle } = useAppHeader();
+
+  useEffect(() => {
+    updateTitle(PageTitle.CreateBloodGroup);
+  }, [updateTitle, PageTitle]);
 
   const [bloodGroupForm, setBloodGroupForm] = useState<BloodGroupForm>(
     formJson.reduce<BloodGroupForm>(
@@ -64,11 +70,11 @@ const BloodGroupCreate: React.FC = () => {
     },
   });
 
-  const validateForm = useCallback((testMasterForm: BloodGroupForm) => {
+  const validateForm = useCallback((formData: BloodGroupForm) => {
     const newErrors: Partial<BloodGroupForm> = {};
     formJson.forEach((field) => {
       try {
-        field.schema.parse(testMasterForm[field.name as keyof BloodGroupForm]);
+        field.schema.parse(formData[field.name as keyof BloodGroupForm]);
       } catch (error) {
         if (error instanceof ZodError) {
           const zodError: ZodError = error;
@@ -103,8 +109,11 @@ const BloodGroupCreate: React.FC = () => {
         field.name,
       ) as string;
     });
+
     setBloodGroupForm({ ...updatedBloodGroupForm });
+
     if (!validateForm(updatedBloodGroupForm)) return;
+
     createUser.mutate(updatedBloodGroupForm);
   };
 
@@ -120,11 +129,9 @@ const BloodGroupCreate: React.FC = () => {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
-      <h2 className="text-2xl font-bold">Create New Test Master</h2>
-
       {formJson.map((field) => (
         <Box key={field.name} className="flex flex-col space-y-2">
-          <Field {...field} />
+          <Field {...field} value={bloodGroupForm[field.name as keyof BloodGroupForm]} />
           {errors[field.name as keyof BloodGroupForm] && (
             <p className="text-red-500 text-sm">
               {errors[field.name as keyof BloodGroupForm]}

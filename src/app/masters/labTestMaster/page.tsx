@@ -2,11 +2,12 @@
 import { getLabTestMaster, masterLabTestMasterDelete } from '@/api/Masters';
 import MoreActions from '@/components/MoreActions/MoreActions';
 import { AppTable } from '@/components/Table';
-import { Navigation } from '@/constants';
+import { Navigation, PageTitle } from '@/constants';
 import { ApiQueryKey } from '@/constants/QueryKey';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
+import { useAppHeader } from '@/app/hooks/appHeader/page';
 
 const LabTestMaster = () => {
   const queryClient = useQueryClient();
@@ -35,6 +36,11 @@ const LabTestMaster = () => {
   const handleDeleteClick = (id: string) => () => {
     handleDeleteOnPress(id);
   };
+  const { updateTitle } = useAppHeader(); 
+
+  useEffect(() => {
+    updateTitle(PageTitle.LabTestMaster);
+  }, [updateTitle, PageTitle]);
 
   const columns = [
     {

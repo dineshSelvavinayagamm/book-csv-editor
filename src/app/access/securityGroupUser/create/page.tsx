@@ -3,12 +3,14 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useMutation } from '@tanstack/react-query';
 import { ApiQueryKey } from '@/constants/QueryKey';
-import { Navigation } from '@/constants';
+import { Navigation, PageTitle } from '@/constants';
 import { Field } from '@/components';
 import { Box } from '@radix-ui/themes';
 import { z, ZodError } from 'zod';
 import { FieldAttributes, FieldType } from '@/types';
 import { accessSecurityGroupUserCreate, getAccessGroup, getUserList, SecurityGroupUserForm } from '@/api';
+import { useAppHeader } from '@/app/hooks/appHeader/page';
+import * as Toast from '@radix-ui/react-toast';
 
 interface GroupData {
   oidPkFld: number;
@@ -40,26 +42,37 @@ const formJson: FieldAttributes[] = [
 
 const SecurityGroupUserCreatePage: React.FC = () => {
   const router = useRouter();
+  const { updateTitle } = useAppHeader(); 
+
+
+  useEffect(() => {
+    updateTitle(PageTitle.SecurityGroupUserCreate);
+  }, [updateTitle, PageTitle]);
   const [errors,setErrors] = useState<Partial<SecurityGroupUserForm>>({});
   const [groupOptions,setGroupOptions] = useState<{label: string; value: string }[]>([]);
   const [userOptions,setUserOptions] = useState<{label: string; value: string }[]>([]);
 
-  const [securityGroupUserForm, setSecurityGroupUserForm] = useState<SecurityGroupUserForm>(
-    formJson.reduce<SecurityGroupUserForm>(
+  const [securityGroupUserForm, setSecurityGroupUserForm] = useState(
+    formJson.reduce(
       (acc, field) => ({ ...acc, [field.name]: '' }),
-      {} as SecurityGroupUserForm,
+      {} as Record<string, any>,
     ),
   );
 
-  
+    const [toastMessage, setToastMessage] = useState<{
+        text: string;
+        isSuccess: boolean;
+      } | null>(null);
 
   const createSecurityGroupUser = useMutation<void, Error, SecurityGroupUserForm>({
     mutationKey: [ApiQueryKey.SecurityGroupUserCreate],
     mutationFn: accessSecurityGroupUserCreate,
     onSuccess: () => {
+      setToastMessage({ text: 'SecurityGroupUser created successfully!', isSuccess: true });
       router.push(Navigation.SecurityGroupUser);
     },
     onError: (error) => {
+      setToastMessage({ text: error.message, isSuccess: false });
       console.error('Error creating user:', error);
     },
   });
@@ -98,7 +111,7 @@ const SecurityGroupUserCreatePage: React.FC = () => {
 
   const validateForm = useCallback(
     (profileForm: SecurityGroupUserForm) => {
-      const newErrors: Partial<SecurityGroupUserForm> = {};
+      const newErrors:Record<string, string> = {};
       formJson.forEach((field) => {
         try {
           field.schema.parse(profileForm[field.name as keyof SecurityGroupUserForm]);
@@ -119,7 +132,15 @@ const SecurityGroupUserCreatePage: React.FC = () => {
     [securityGroupUserForm],
   );
 
- 
+  useEffect(() => {
+    if (toastMessage) {
+      const timer = setTimeout(() => {
+        setToastMessage(null);
+      }, 60000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [toastMessage]);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -128,12 +149,14 @@ const SecurityGroupUserCreatePage: React.FC = () => {
 
     formJson.forEach((field) => {
       const value = formData.get(field.name);
-      updatedSecurityGroupUserForm[field.name as keyof SecurityGroupUserForm] = [
-        'securityGroup',
-        'user',
-      ].includes(field.name)? ( value as string):( value as string);
-    }); 
-
+      if (field.name === 'securityGroup' || field.name === 'user') {
+        const parsedValue = value ? parseInt(value as string, 10) : NaN;
+      updatedSecurityGroupUserForm[field.name as keyof SecurityGroupUserForm] = 
+        isNaN(parsedValue) ? 0 : parsedValue;  
+    } else {
+      updatedSecurityGroupUserForm[field.name as keyof SecurityGroupUserForm] = value as string;
+    }
+  });
     setSecurityGroupUserForm({...updatedSecurityGroupUserForm});
 
     if (!validateForm(updatedSecurityGroupUserForm)) return;
@@ -144,7 +167,7 @@ const SecurityGroupUserCreatePage: React.FC = () => {
     setSecurityGroupUserForm(
       formJson.reduce(
         (acc, field) => ({ ...acc, [field.name]: field.required ? '' : undefined }),
-        {} as SecurityGroupUserForm,
+        {} as  Record<string, any>,
       ),
     );
     router.push(Navigation.SecurityGroupUser);
@@ -152,8 +175,6 @@ const SecurityGroupUserCreatePage: React.FC = () => {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
-      <h2 className="text-2xl font-bold">Create New SecurityGroupUser</h2>
-
       {formJson.map((field) => {
         const fieldWithoptions ={
           ...field,
@@ -190,6 +211,18 @@ const SecurityGroupUserCreatePage: React.FC = () => {
           Submit
         </button>
       </div>
+      <Toast.Provider swipeDirection="right">
+        {toastMessage && (
+          <Toast.Root
+            className={`fixed bottom-4 right-4 p-4 rounded-md shadow-lg ${toastMessage.isSuccess ? 'bg-green-500 text-white' : 'bg-red-500 text-white'
+              }`}
+            onOpenChange={() => setToastMessage(null)}
+          >
+            <Toast.Title>{toastMessage.text}</Toast.Title>
+          </Toast.Root>
+        )}
+        <Toast.Viewport />
+      </Toast.Provider>
     </form>
   );
 };

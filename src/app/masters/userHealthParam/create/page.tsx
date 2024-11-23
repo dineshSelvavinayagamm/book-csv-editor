@@ -3,7 +3,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useMutation } from '@tanstack/react-query';
 import { ApiQueryKey } from '@/constants/QueryKey';
-import { Navigation } from '@/constants';
+import { Navigation, PageTitle } from '@/constants';
 import { Field } from '@/components';
 import { Box } from '@radix-ui/themes';
 import { FieldAttributes, FieldType } from '@/types';
@@ -15,6 +15,7 @@ import {
   getUserList,
   getBloodGroup,
 } from '@/api';
+import { useAppHeader } from '@/app/hooks/appHeader/page';
 
 interface BloodGroupData {
   oidPkFld: number;
@@ -31,43 +32,48 @@ const formJson: FieldAttributes[] = [
     name: 'userIdFKFld',
     label: 'User Name',
     type: FieldType.SELECT,
-    required: false,
+    required: true,
     options: [],
-    schema: z.number().int().positive({ message: 'Please select a valid user' }),
+    schema: z.number().int().min(1, { message: 'Lab Name is required' }),
   },
   {
     name: 'heightFld',
     label: 'Height',
     type: FieldType.TEXT,
-    required: false,
-    schema: z.number(),
+    required: true,
+    schema: z.number().min(1, { message: 'Height is required' }).optional(),
   },
   {
     name: 'weightFld',
     label: 'Weight',
     type: FieldType.TEXT,
     required: true,
-    schema: z.string(),
+    schema: z.string().min(1, { message: 'Weight is required' }),
   },
   {
     name: 'bloodgroupFld',
     label: 'Blood Group',
     type: FieldType.SELECT,
-    required: false,
+    required: true,
     options: [],
-    schema: z.number().int().positive({ message: 'Please select a valid blood group' }),
+    schema: z.number().int().min(1, { message: 'Blood Group is required' }),
   },
   {
     name: 'custom1Fld',
     label: 'Remarks',
     type: FieldType.TEXT,
-    required: false,
-    schema: z.string(),
+    required: true,
+    schema: z.string().min(1, { message: 'Remarks is required' }),
   },
 ];
 
 const UserHealthParamCreate: React.FC = () => {
   const router = useRouter();
+  const { updateTitle } = useAppHeader();
+
+  useEffect(() => {
+    updateTitle(PageTitle.UserHealthParamCreate);
+  }, [updateTitle, PageTitle]);
   const [userHealthParamForm, setUserHealthParamForm] = useState<UserHealthParamForm>(
     formJson.reduce<UserHealthParamForm>(
       (acc, field) => ({ ...acc, [field.name]: '' }),
@@ -174,12 +180,13 @@ const UserHealthParamCreate: React.FC = () => {
 
     formJson.forEach((field) => {
       const value = formData.get(field.name);
-      updatedUserHealthParamForm[field.name as keyof UserHealthParamForm] =
-        field.name === 'heightFld'
-          ? parseFloat(value as string)
-          : ['userIdFKFld', 'bloodgroupFld'].includes(field.name)
-            ? parseInt(value as string, 10)
-            : (value as string);
+      if (field.name === 'userIdFKFld' || field.name === 'heightFld' || field.name === 'bloodgroupFld') {
+        const parsedValue = value ? parseInt(value as string, 10) : NaN;
+        updatedUserHealthParamForm[field.name as keyof UserHealthParamForm] = 
+        isNaN(parsedValue) ? 0 : parsedValue;  
+    } else {
+      updatedUserHealthParamForm[field.name as keyof UserHealthParamForm] = value as string;
+    }
     });
 
     setUserHealthParamForm({ ...updatedUserHealthParamForm });
@@ -200,8 +207,6 @@ const UserHealthParamCreate: React.FC = () => {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
-      <h2 className="text-2xl font-bold">Create New User Health Param</h2>
-
       {formJson.map((field) => {
         const fieldWithOptions = {
           ...field,

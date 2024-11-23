@@ -1,17 +1,24 @@
 'use client';
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { getAccessSecurityRolePrivilege, securityRolePrivilegeDelete } from '@/api';
 import { AppTable } from '@/components';
-import { ApiQueryKey, Navigation } from '@/constants';
+import { ApiQueryKey, Navigation, PageTitle } from '@/constants';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import MoreActions from '@/components/MoreActions/MoreActions';
 import { useParams, useRouter } from 'next/navigation';
+import { useAppHeader } from '@/app/hooks/appHeader/page';
 
 const SecurityRolePrivilege = () => {
     const queryClient = useQueryClient();
   const { id } = useParams();
     const router = useRouter();
     console.log('Fetching details for ID:', id);
+    const { updateTitle } = useAppHeader(); 
+
+
+    useEffect(() => {
+      updateTitle(PageTitle.RolePrivilege);
+    }, [updateTitle, PageTitle]);
 
     const handleCreateClick = useCallback(() => {
         router.push(Navigation.CreateSecurityRolePrivilege);
@@ -51,7 +58,6 @@ const columns = [
     {
         accessor: 'actions',
         header: 'Actions',
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         render: (row: any) => (
             <MoreActions
                 row={row}

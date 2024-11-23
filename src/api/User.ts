@@ -27,8 +27,8 @@ export interface SecurityRolePrivilegeForm {
   securityPrivilegeIdFKFld?: string;
 }
 export interface SecurityGroupRoleForm {
-  securityRole?: string;
-  securityGroup?: string;
+  securityRole?: number | any;
+  securityGroup?: number | any;
 }
 
 export interface PrivilegeForm {
@@ -44,8 +44,8 @@ export interface RoleForm {
 }
 
 export interface SecurityGroupUserForm {
-  securityGroup?: string ;
-  user?: string ;
+  securityGroup?: number | any;
+  user?: number | any;
 }
 
 export const getAccessGroup = async () => {

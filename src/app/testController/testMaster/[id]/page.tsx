@@ -1,13 +1,20 @@
 'use client';
 import { useParams } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
-import React from 'react';
-import { Spinner, Text } from '@radix-ui/themes';
+import React, { useEffect } from 'react';
+import { Spinner } from '@radix-ui/themes';
 import { AppTable } from '@/components/Table';
 import { getTestMasterDetail } from '@/api';
+import { useAppHeader } from '@/app/hooks/appHeader/page';
+import { PageTitle } from '@/constants';
 
 const TestMasterDetailPage = () => {
   const { id } = useParams();
+  const { updateTitle } = useAppHeader();
+
+  useEffect(() => {
+    updateTitle(PageTitle.TestMasterDetails);
+  }, [updateTitle, PageTitle]);
   console.log('Fetching details for ID:', id);
 
   const { data, isLoading } = useQuery({
@@ -69,11 +76,6 @@ const TestMasterDetailPage = () => {
 
   return (
     <div className="p-4">
-      <div className="pb-8">
-        <Text size="5" className="font-bold mb-2">
-          Test Master Details
-        </Text>
-      </div>
       <AppTable columns={columns} data={tableData} isLoading={isLoading} />
     </div>
   );

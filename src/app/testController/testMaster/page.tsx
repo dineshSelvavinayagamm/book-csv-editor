@@ -1,11 +1,12 @@
 'use client';
-import React, { useCallback } from 'react';
-import { getTestMaster, labTestMasterDelete } from '@/api';
+import React, { useCallback, useEffect } from 'react';
+import { getTestMaster, labTestMasterDelete, labTestPackageDelete } from '@/api';
 import { AppTable } from '@/components';
-import { ApiQueryKey, Navigation } from '@/constants';
+import { ApiQueryKey, Navigation, PageTitle } from '@/constants';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import MoreActions from '@/components/MoreActions/MoreActions';
 import { useParams, useRouter } from 'next/navigation';
+import { useAppHeader } from '@/app/hooks/appHeader/page';
 
 const TestMaster = () => {
   const queryClient = useQueryClient();
@@ -20,6 +21,12 @@ const TestMaster = () => {
     queryKey: [ApiQueryKey.testMaster],
     queryFn: getTestMaster,
   });
+
+  const { updateTitle } = useAppHeader(); 
+
+  useEffect(() => {
+    updateTitle(PageTitle.TestMaster);
+  }, [updateTitle, PageTitle]);
 
   const handleDeleteOnPress = async (id: string) => {
     try {
