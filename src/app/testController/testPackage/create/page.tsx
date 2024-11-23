@@ -10,7 +10,7 @@ import { FieldAttributes, FieldType } from '@/types';
 import { z, ZodError } from 'zod';
 import { testPackageCreate, TestPackageForm } from '@/api';
 import * as Toast from '@radix-ui/react-toast';
-import { useAppHeader } from '@/app/hooks/appHeader/page';
+import { useAppHeader } from '@/app/hooks/appHeader';
 
 const formJson: FieldAttributes[] = [
   {

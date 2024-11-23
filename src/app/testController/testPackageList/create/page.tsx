@@ -15,7 +15,7 @@ import {
   getTestPackage,
   getTestMaster,
 } from '@/api';
-import { useAppHeader } from '@/app/hooks/appHeader/page';
+import { useAppHeader } from '@/app/hooks/appHeader';
 
 interface PackageNameFormData {
   oidPkFld: number;

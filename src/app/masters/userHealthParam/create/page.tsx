@@ -15,7 +15,7 @@ import {
   getUserList,
   getBloodGroup,
 } from '@/api';
-import { useAppHeader } from '@/app/hooks/appHeader/page';
+import { useAppHeader } from '@/app/hooks/appHeader';
 
 interface BloodGroupData {
   oidPkFld: number;

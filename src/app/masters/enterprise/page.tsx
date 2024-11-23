@@ -1,6 +1,6 @@
 'use client';
 import { getEnterprise } from '@/api/Masters';
-import { useAppHeader } from '@/app/hooks/appHeader/page';
+import { useAppHeader } from '@/app/hooks/appHeader';
 import MoreActions from '@/components/MoreActions/MoreActions';
 import { AppTable } from '@/components/Table';
 import { Navigation, PageTitle } from '@/constants';

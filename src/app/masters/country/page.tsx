@@ -1,6 +1,6 @@
 'use client';
 import { getCountry } from '@/api';
-import { useAppHeader } from '@/app/hooks/appHeader/page';
+import { useAppHeader } from '@/app/hooks/appHeader';
 import { AppTable } from '@/components';
 import { ApiQueryKey, PageTitle } from '@/constants';
 import { useQuery } from '@tanstack/react-query';

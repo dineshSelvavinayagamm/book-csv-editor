@@ -6,7 +6,7 @@ import { ApiQueryKey, Navigation, PageTitle } from '@/constants';
 import {  getAccessSecurityGroupUser, securitygroupuserdelete } from '@/api';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useParams, useRouter } from 'next/navigation';
-import { useAppHeader } from '@/app/hooks/appHeader/page';
+import { useAppHeader } from '@/app/hooks/appHeader';
 
 const SecurityGroupUser = () => {
   const queryClient = useQueryClient();

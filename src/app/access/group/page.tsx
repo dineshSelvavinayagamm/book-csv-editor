@@ -7,7 +7,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { AppTable } from '@/components';
 import MoreActions from '@/components/MoreActions/MoreActions';
 import { useRouter } from 'next/navigation';
-import { useAppHeader } from '@/app/hooks/appHeader/page';
+import { useAppHeader } from '@/app/hooks/appHeader';
 
 const Group = () => {
   const { updateTitle } = useAppHeader();

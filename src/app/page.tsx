@@ -1,7 +1,7 @@
 "use client"; // Add this at the top
 
 import { Box } from '@radix-ui/themes';
-import { useAppHeader } from './hooks/appHeader/page';
+import { useAppHeader } from './hooks/appHeader';
 import { useEffect } from 'react';
 import { PageTitle } from '@/constants';
 

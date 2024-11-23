@@ -9,7 +9,7 @@ import { useMutation } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import React, { useCallback, useEffect, useState } from 'react';
 import { z, ZodError } from 'zod';
-import { useAppHeader } from '@/app/hooks/appHeader/page';
+import { useAppHeader } from '@/app/hooks/appHeader';
 import * as Toast from '@radix-ui/react-toast';
 
 const formJson: FieldAttributes[] = [

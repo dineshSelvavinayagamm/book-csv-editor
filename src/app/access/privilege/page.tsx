@@ -8,7 +8,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import MoreActions from '@/components/MoreActions/MoreActions';
 import { useRouter } from 'next/navigation';
 import { PageTitle } from '@/constants/PageTitle';
-import { useAppHeader } from '@/app/hooks/appHeader/page';
+import { useAppHeader } from '@/app/hooks/appHeader';
 
 const Privilege = () => {
   const queryClient = useQueryClient();

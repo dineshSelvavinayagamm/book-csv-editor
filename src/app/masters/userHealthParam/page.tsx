@@ -7,7 +7,7 @@ import React, { useCallback, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { Navigation, PageTitle } from '@/constants';
 import MoreActions from '@/components/MoreActions/MoreActions';
-import { useAppHeader } from '@/app/hooks/appHeader/page';
+import { useAppHeader } from '@/app/hooks/appHeader';
 
 const UserHealthParam = () => {
   const queryClient = useQueryClient();

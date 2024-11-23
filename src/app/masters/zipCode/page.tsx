@@ -1,6 +1,6 @@
 'use client';
 import { getZipCode } from '@/api/Masters';
-import { useAppHeader } from '@/app/hooks/appHeader/page';
+import { useAppHeader } from '@/app/hooks/appHeader';
 import { AppTable } from '@/components/Table';
 import { PageTitle } from '@/constants';
 import { ApiQueryKey } from '@/constants/QueryKey';

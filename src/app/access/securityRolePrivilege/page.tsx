@@ -6,7 +6,7 @@ import { ApiQueryKey, Navigation, PageTitle } from '@/constants';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import MoreActions from '@/components/MoreActions/MoreActions';
 import { useParams, useRouter } from 'next/navigation';
-import { useAppHeader } from '@/app/hooks/appHeader/page';
+import { useAppHeader } from '@/app/hooks/appHeader';
 
 const SecurityRolePrivilege = () => {
     const queryClient = useQueryClient();

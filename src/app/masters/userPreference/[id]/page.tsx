@@ -5,7 +5,7 @@ import React, { useEffect } from 'react';
 import { Spinner } from '@radix-ui/themes';
 import { getUserPreferenceDetail } from '@/api/Masters';
 import { AppTable } from '@/components/Table';
-import { useAppHeader } from '@/app/hooks/appHeader/page';
+import { useAppHeader } from '@/app/hooks/appHeader';
 import { PageTitle } from '@/constants/PageTitle';
 
 const UserPreferenceDetailPage = () => {

@@ -8,7 +8,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import MoreActions from '@/components/MoreActions/MoreActions';
 import { PageTitle } from '@/constants/PageTitle';
-import { useAppHeader } from '../hooks/appHeader/page';
+import { useAppHeader } from '../hooks/appHeader';
 
 const Profile = () => {
   const queryClient = useQueryClient();

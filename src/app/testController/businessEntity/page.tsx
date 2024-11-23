@@ -4,7 +4,7 @@ import { getBusinessEntityType } from '@/api';
 import { AppTable } from '@/components';
 import { ApiQueryKey, PageTitle } from '@/constants';
 import { useQuery } from '@tanstack/react-query';
-import { useAppHeader } from '@/app/hooks/appHeader/page';
+import { useAppHeader } from '@/app/hooks/appHeader';
 
 const columns = [
   {

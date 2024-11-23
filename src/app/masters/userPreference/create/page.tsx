@@ -10,7 +10,7 @@ import { FieldAttributes, FieldType } from '@/types';
 import { z, ZodError } from 'zod';
 import { getUserList, userPreferenceCreate, UserPreferenceForm } from '@/api';
 import * as Toast from '@radix-ui/react-toast';
-import { useAppHeader } from '@/app/hooks/appHeader/page';
+import { useAppHeader } from '@/app/hooks/appHeader';
 
 interface UserFormData {
   oidPkFld: number;

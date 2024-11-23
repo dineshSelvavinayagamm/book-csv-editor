@@ -6,7 +6,7 @@ import { ApiQueryKey, Navigation, PageTitle } from '@/constants';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import MoreActions from '@/components/MoreActions/MoreActions';
 import { useRouter } from 'next/navigation';
-import { useAppHeader } from '@/app/hooks/appHeader/page';
+import { useAppHeader } from '@/app/hooks/appHeader';
 
 const Roles = () => {
   const { updateTitle } = useAppHeader();

@@ -9,7 +9,7 @@ import { Box } from '@radix-ui/themes';
 import { z, ZodError } from 'zod';
 import { FieldAttributes, FieldType } from '@/types';
 import { accessSecurityGroupUserCreate, getAccessGroup, getUserList, SecurityGroupUserForm } from '@/api';
-import { useAppHeader } from '@/app/hooks/appHeader/page';
+import { useAppHeader } from '@/app/hooks/appHeader';
 import * as Toast from '@radix-ui/react-toast';
 
 interface GroupData {

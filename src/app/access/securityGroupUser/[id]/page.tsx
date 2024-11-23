@@ -5,7 +5,7 @@ import React, { useEffect } from 'react';
 import { Spinner } from '@radix-ui/themes';
 import { AppTable } from '@/components/Table';
 import { securityGroupUserDetail } from '@/api/User';
-import { useAppHeader } from '@/app/hooks/appHeader/page';
+import { useAppHeader } from '@/app/hooks/appHeader';
 import { PageTitle } from '@/constants/PageTitle';
 
 const SecurityGroupUserDetailPage = () => {

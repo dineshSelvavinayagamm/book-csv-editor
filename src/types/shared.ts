@@ -31,7 +31,7 @@ export interface BaseFieldAttributes {
   type: FieldType;
   required?: boolean;
   gridWidth?: number;
-  options?: { label: string; value: string | number }[];
+  options?: { label: string; value: string }[];
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   schema: z.ZodType<any>;
   value?: string;

@@ -7,7 +7,7 @@ import { ApiQueryKey } from '@/constants/QueryKey';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import React, { useCallback, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { useAppHeader } from '@/app/hooks/appHeader/page';
+import { useAppHeader } from '@/app/hooks/appHeader';
 
 const LabTestMaster = () => {
   const queryClient = useQueryClient();

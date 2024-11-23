@@ -4,7 +4,7 @@ import React, { ReactNode, useCallback, useEffect, useState } from 'react';
 import { Header } from '../Header';
 import { LeftSideBar, RightSideBar } from '../SideBar';
 import { Footer } from '../Footer';
-import { useAppHeader } from '@/app/hooks/appHeader/page';
+import { useAppHeader } from '@/app/hooks/appHeader';
 
 interface LayoutProps {
   children: ReactNode;
