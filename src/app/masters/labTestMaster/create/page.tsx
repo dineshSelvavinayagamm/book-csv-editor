@@ -16,6 +16,7 @@ import {
   LabTestMasterForm,
   TestPriceForm,
 } from '@/api';
+import { Field } from '@/components';
 
 interface LabTestMasterData {
   oidPkFld: number;
@@ -225,9 +226,9 @@ const LabTestMasterCreate: React.FC = () => {
 
         return (
           <Box key={fieldWithOptions.name} className="flex flex-col space-y-2">
-            {/* <Field
+            <Field
               {...{ ...fieldWithOptions, options: fieldWithOptions.options ?? [] }}
-            /> */}
+            />
             {errors[fieldWithOptions.name as keyof LabTestMasterForm] && (
               <p className="text-red-500 text-sm">
                 {errors[fieldWithOptions.name as keyof LabTestMasterForm]}
