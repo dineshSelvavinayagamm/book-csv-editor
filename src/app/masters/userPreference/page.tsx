@@ -52,7 +52,7 @@ const UserPreference = () => {
     },
     {
       accessor: 'preferenceValueFld',
-      header: 'preference Value',
+      header: 'Preference Value',
     },
     {
       accessor: 'actions',

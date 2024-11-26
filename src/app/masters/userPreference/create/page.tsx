@@ -22,23 +22,22 @@ const formJson: FieldAttributes[] = [
     name: 'userIdFKFld',
     label: 'User Name',
     type: FieldType.SELECT,
-    required: false,
+    required: true,
     options: [],
-    schema: z.number().int().min(1, { message: 'Lab Name is required' }),
-  },
+    schema:  z.number().int().positive({ message: 'User Name is Required'}),  },
   {
     name: 'preferenceTypeFld',
     label: 'Preference Type',
     type: FieldType.TEXT,
-    required: false,
-    schema: z.number().min(1, { message: 'Preference Type is required' }),
+    required: true,
+    schema:  z.number().int().positive({ message: 'Preference Type is Required' }),
   },
   {
     name: 'preferenceValueFld',
     label: 'Preference Value',
     type: FieldType.TEXT,
-    required: false,
-    schema: z.number().min(1, { message: 'Preference Value is required' }),
+    required: true,
+    schema:  z.number().int().positive({ message: 'Preference Value is Required' }),
   },
 ];
 
@@ -85,8 +84,7 @@ const UserPreferenceCreate: React.FC = () => {
           field.schema.parse(profileForm[field.name as keyof UserPreferenceForm]);
         } catch (error) {
           if (error instanceof ZodError) {
-            const zodError: ZodError = error;
-            newErrors[field.name as keyof UserPreferenceForm] = zodError.issues
+            newErrors[field.name as keyof UserPreferenceForm] = error.issues
               .map((issue) => issue.message)
               .join(', ');
           } else {
@@ -97,7 +95,7 @@ const UserPreferenceCreate: React.FC = () => {
       setErrors(newErrors);
       return Object.keys(newErrors).length === 0;
     },
-    [userPreferenceForm],
+    [],
   );
 
   const fetchUserOptions = async () => {
@@ -132,7 +130,7 @@ const UserPreferenceCreate: React.FC = () => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const updatedUserPreferenceForm: Record<string, any> = {};
+    const updatedUserPreferenceForm: UserPreferenceForm = {...userPreferenceForm};
 
     formJson.forEach((field) => {
       const value = formData.get(field.name);
@@ -145,18 +143,18 @@ const UserPreferenceCreate: React.FC = () => {
     }
     });
 
-    const preferenceTypeFld = formData.get('preferenceTypeFld');
-    const preferenceValueFld = formData.get('preferenceValueFld');
-    const userIdFKFld = formData.get('userIdFKFld');
+    // const preferenceTypeFld = formData.get('preferenceTypeFld');
+    // const preferenceValueFld = formData.get('preferenceValueFld');
+    // const userIdFKFld = formData.get('userIdFKFld');
 
-    updatedUserPreferenceForm.preferenceTypeFld = preferenceTypeFld
-      ? Number(preferenceTypeFld)
-      : null;
-    updatedUserPreferenceForm.preferenceValueFld = preferenceValueFld
-      ? Number(preferenceValueFld)
-      : null;
-    updatedUserPreferenceForm.userIdFKFld = userIdFKFld ? Number(userIdFKFld) : null;
-    setUserPreferenceForm({ ...updatedUserPreferenceForm });
+    // updatedUserPreferenceForm.preferenceTypeFld = preferenceTypeFld
+    //   ? Number(preferenceTypeFld)
+    //   : null;
+    // updatedUserPreferenceForm.preferenceValueFld = preferenceValueFld
+    //   ? Number(preferenceValueFld)
+    //   : null;
+    // updatedUserPreferenceForm.userIdFKFld = userIdFKFld ? Number(userIdFKFld) : null;
+    setUserPreferenceForm(updatedUserPreferenceForm);
     if (!validateForm(updatedUserPreferenceForm)) return;
     createUser.mutate(updatedUserPreferenceForm);
   };

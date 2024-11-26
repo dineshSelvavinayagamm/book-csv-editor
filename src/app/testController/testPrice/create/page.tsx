@@ -22,8 +22,8 @@ const initialFormJson: FieldAttributes[] = [
     name: 'priceFld',
     label: 'Price',
     type: FieldType.TEXT,
-    required: false,
-    schema: z.number(),
+    required: true,
+    schema: z.number().int().positive({ message: 'Price is Required' }),
   },
   {
     name: 'testNameFKFld',
@@ -37,8 +37,8 @@ const initialFormJson: FieldAttributes[] = [
     name: 'discountFld',
     label: 'Discount',
     type: FieldType.TEXT,
-    required: false,
-    schema: z.number(),
+    required: true,
+    schema: z.number().int().positive({ message: 'Discount is Required' }),
   },
   {
     name: 'isActiveFld',
@@ -107,8 +107,7 @@ const TestPriceCreate: React.FC = () => {
         field.schema.parse(testPriceForm[field.name as keyof TestPriceForm]);
       } catch (error) {
         if (error instanceof ZodError) {
-          const zodError: ZodError = error;
-          newErrors[field.name as keyof TestPriceForm] = zodError.issues
+          newErrors[field.name as keyof TestPriceForm] = error.issues
             .map((issue) => issue.message)
             .join(', ');
         } else {
@@ -153,18 +152,19 @@ const TestPriceCreate: React.FC = () => {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
-    const updatedTestPriceForm = { ...testPriceForm };
+    const updatedTestPriceForm: TestPriceForm = { ...testPriceForm };
 
     initialFormJson.forEach((field) => {
-      const fieldValue = formData.get(field.name);
+        const fieldValue = formData.get(field.name);
 
-      if (field.name === 'priceFld' || field.name === 'discountFld') {
-        updatedTestPriceForm[field.name as keyof TestPriceForm] = fieldValue
-          ? parseFloat(fieldValue as string)
-          : undefined;
-      } else {
-        updatedTestPriceForm[field.name as keyof TestPriceForm] = fieldValue as string;
-      }
+        if (field.schema instanceof z.ZodNumber) {
+            const parsedValue = fieldValue && !isNaN(Number(fieldValue)) 
+                ? Number(fieldValue) 
+                : 0;
+            updatedTestPriceForm[field.name as keyof TestPriceForm] = parsedValue;
+        } else {
+            updatedTestPriceForm[field.name as keyof TestPriceForm] = fieldValue as string;
+        }
     });
 
     setTestPriceForm(updatedTestPriceForm);
@@ -172,7 +172,8 @@ const TestPriceCreate: React.FC = () => {
     if (!validateForm(updatedTestPriceForm)) return;
 
     createUser.mutate(updatedTestPriceForm);
-  };
+};
+
 
   const handleCancel = () => {
     setTestPriceForm(
@@ -221,9 +222,8 @@ const TestPriceCreate: React.FC = () => {
       <Toast.Provider swipeDirection="right">
         {toastMessage && (
           <Toast.Root
-            className={`fixed bottom-4 right-4 p-4 rounded-md shadow-lg ${
-              toastMessage.isSuccess ? 'bg-green-500 text-white' : 'bg-red-500 text-white'
-            }`}
+            className={`fixed bottom-4 right-4 p-4 rounded-md shadow-lg ${toastMessage.isSuccess ? 'bg-green-500 text-white' : 'bg-red-500 text-white'
+              }`}
             onOpenChange={() => setToastMessage(null)}
           >
             <Toast.Title>{toastMessage.text}</Toast.Title>

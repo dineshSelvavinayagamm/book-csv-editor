@@ -59,7 +59,7 @@ const formJson: FieldAttributes[] = [
         value: 'N',
       },
     ],
-    schema: z.string().min(1, { message: 'Active is required' }),
+    schema: z.string().min(1, { message: 'Active must be Select' }),
   },
 ];
 

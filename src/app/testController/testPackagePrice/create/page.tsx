@@ -25,14 +25,14 @@ const formJson: FieldAttributes[] = [
     name: 'priceFld',
     label: 'Price',
     type: FieldType.TEXT,
-    required: false,
+    required: true,
     schema: z.number().min(0, 'Price must be a positive number'),
   },
   {
     name: 'discountFld',
     label: 'Discount',
     type: FieldType.TEXT,
-    required: false,
+    required: true,
     schema: z.number().min(0, 'Discount must be a positive number'),
   },
   {
@@ -56,7 +56,7 @@ const formJson: FieldAttributes[] = [
     name: 'custom1Fld',
     label: 'Remarks',
     type: FieldType.TEXT,
-    required: false,
+    required: true,
     schema: z.string().optional(),
   },
 ];
@@ -111,8 +111,7 @@ const TestPackagePriceCreate: React.FC = () => {
           );
         } catch (error) {
           if (error instanceof ZodError) {
-            const zodError: ZodError = error;
-            newErrors[field.name as keyof TestPackagePriceForm] = zodError.issues
+            newErrors[field.name as keyof TestPackagePriceForm] = error.issues
               .map((issue) => issue.message)
               .join(', ');
           } else {
@@ -123,7 +122,7 @@ const TestPackagePriceCreate: React.FC = () => {
       setErrors(newErrors);
       return Object.keys(newErrors).length === 0;
     },
-    [testPackagePriceForm],
+    [],
   );
 
   const fetchTestPackages = async () => {
@@ -158,21 +157,17 @@ const TestPackagePriceCreate: React.FC = () => {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
-    const updatedTestPackagePriceForm = { ...testPackagePriceForm };
+    const updatedTestPackagePriceForm: TestPackagePriceForm = { ...testPackagePriceForm };
 
     formJson.forEach((field) => {
-      const value = formData.get(field.name) as string | number;
+      const value = formData.get(field.name);
 
-      if (field.name === 'priceFld' || field.name === 'discountFld') {
+      if (field.name === 'priceFld' || field.name === 'discountFld' || field.name === 'testPackageFKFld') {
+        const parsedValue = value ? parseInt(value as string, 10) : NaN;
         updatedTestPackagePriceForm[field.name as keyof TestPackagePriceForm] =
-          parseFloat(value as string);
-      } else if (field.name === 'testPackageFKFld') {
-        updatedTestPackagePriceForm[field.name as keyof TestPackagePriceForm] = parseInt(
-          value as string,
-          10,
-        );
+          isNaN(parsedValue) ? 0 : parsedValue;
       } else {
-        updatedTestPackagePriceForm[field.name as keyof TestPackagePriceForm] = value;
+        updatedTestPackagePriceForm[field.name as keyof TestPackagePriceForm] = value as string;
       }
     });
 
@@ -231,9 +226,8 @@ const TestPackagePriceCreate: React.FC = () => {
       <Toast.Provider swipeDirection="right">
         {toastMessage && (
           <Toast.Root
-            className={`fixed bottom-4 right-4 p-4 rounded-md shadow-lg ${
-              toastMessage.isSuccess ? 'bg-green-500 text-white' : 'bg-red-500 text-white'
-            }`}
+            className={`fixed bottom-4 right-4 p-4 rounded-md shadow-lg ${toastMessage.isSuccess ? 'bg-green-500 text-white' : 'bg-red-500 text-white'
+              }`}
             onOpenChange={() => setToastMessage(null)}
           >
             <Toast.Title>{toastMessage.text}</Toast.Title>

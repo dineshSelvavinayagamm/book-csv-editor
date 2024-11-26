@@ -23,7 +23,7 @@ const testMasterSchema = z.object({
   testAliaseFld: z.string().optional(),
   descriptionFld: z.string().optional(),
   // testParameterMasterFKFld: z.string().min(1, 'Test Parameter Name is required'),
-  isActiveFld: z.string().optional(),
+  isActiveFld: z.string().nonempty('Active Status is required'),
   testCategoryFld: z.string().optional(),
 });
 
