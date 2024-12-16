@@ -90,7 +90,6 @@ export const SIDE_BAR_MENU = [
       { title: 'Test Master', route: Navigation.TestMaster, icon: <ValueIcon /> },
       { title: 'Blood Group', route: Navigation.BloodGroup, icon: <ValueIcon /> },
       { title: 'Business Entity', route: Navigation.BusinessEntity, icon: <ValueIcon /> },
-
     ],
   },
 ];

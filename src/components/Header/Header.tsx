@@ -1,6 +1,7 @@
 import React from 'react';
 import { Box, Flex, TextField } from '@radix-ui/themes';
 import { AvatarIcon, MagnifyingGlassIcon } from '@radix-ui/react-icons';
+import { SidebarTrigger } from '../ui/sidebar';
 
 interface HeaderProps {
   onClickMenu: () => void;
@@ -11,7 +12,11 @@ const Header = ({ onClickMenu, title }: HeaderProps) => {
   return (
     <header className="sticky top-0 z-10 shadow-md p-4 bg-white">
       <Flex direction="row" justify="between" align="center">
-        <h1 className="text-xl font-bold">{title}</h1>
+        <Flex direction="row">
+          <SidebarTrigger />
+          <h1 className="text-xl font-bold">{title}</h1>
+        </Flex>
+
         <Flex direction="row" gap="4" align="center">
           <TextField.Root placeholder="Search the docs…">
             <TextField.Slot>

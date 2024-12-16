@@ -5,6 +5,7 @@ import { Header } from '../Header';
 import { LeftSideBar, RightSideBar } from '../SideBar';
 import { Footer } from '../Footer';
 import { useAppHeader } from '@/app/hooks/appHeader';
+import { SidebarProvider } from '../ui/sidebar';
 
 interface LayoutProps {
   children: ReactNode;
@@ -44,13 +45,16 @@ const AppLayout = ({ children }: LayoutProps) => {
 
   return (
     <div className="min-h-screen flex">
-      <LeftSideBar />
-      <div className="flex-1 flex flex-col">
-        <Header onClickMenu={onClickMenu} title={title} />
-        <main className="flex-1 p-6">{children}</main>
-        <Footer />
-      </div>
-      <RightSideBar isOpen={isOpen} onClose={onCloseDrawer} />
+      <SidebarProvider defaultOpen={true}>
+        <LeftSideBar />
+
+        <div className="flex-1 flex flex-col">
+          <Header onClickMenu={onClickMenu} title={title} />
+          <main className="flex-1 p-6">{children}</main>
+          <Footer />
+        </div>
+        <RightSideBar isOpen={isOpen} onClose={onCloseDrawer} />
+      </SidebarProvider>
     </div>
   );
 };

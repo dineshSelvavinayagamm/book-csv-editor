@@ -1,95 +1,113 @@
 'use client';
-import { Cross2Icon, PersonIcon } from '@radix-ui/react-icons';
-import { Flex, IconButton, Text, Avatar, Card, Button } from '@radix-ui/themes';
-import React, { useCallback } from 'react';
-import { useRouter } from 'next/navigation';
+import React, { Component } from 'react';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 
 interface RightSideBarProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
-const RightSideBar = ({ isOpen, onClose }: RightSideBarProps) => {
-  const router = useRouter();
+interface RightSideBarState {
+  name: string;
+  username: string;
+  isSaving: boolean;
+}
 
-  const handleLogout = useCallback(() => {
-    router.push('/login');
-  }, [router]);
+class RightSideBar extends Component<RightSideBarProps, RightSideBarState> {
+  state: RightSideBarState = {
+    name: 'Virat',
+    username: 'Virat@123',
+    isSaving: false,
+  };
 
-  const handleProfile = useCallback(() => {
-    router.push('/profile');
-  }, [router]);
+  handleChange =
+    (field: keyof RightSideBarState) => (event: React.ChangeEvent<HTMLInputElement>) => {
+      this.setState({ [field]: event.target.value } as unknown as Pick<
+        RightSideBarState,
+        keyof RightSideBarState
+      >);
+    };
 
-  const handleNotifications = useCallback(() => {}, []);
-  const handleMessages = useCallback(() => {}, []);
-  const handleSettings = useCallback(() => {}, []);
+  handleSave = async () => {
+    const { name, username } = this.state;
+    this.setState({ isSaving: true });
 
-  return (
-    <>
-      {isOpen && (
-        <div className="fixed inset-0 z-40 bg-black opacity-50" onClick={onClose} />
-      )}
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 2000));
 
-      <div
-        className={`fixed top-0 right-0 h-full bg-tertiary text-primary p-4 shadow-lg z-50 transition-transform ${
-          isOpen ? 'translate-x-0' : 'translate-x-full'
-        }`}
-        style={{ width: '250px' }}
-      >
-        <Flex direction="row" justify="end">
-          <IconButton onClick={onClose}>
-            <Cross2Icon />
-          </IconButton>
-        </Flex>
+      console.log('Updated Profile:', { name, username });
 
-        <Flex direction="column" gap="2" className="mt-4">
-          <Button
-            variant="surface"
-            className="bg-primary text-black"
-            onClick={handleProfile}
-          >
-            Profile
-          </Button>
-          <Button
-            variant="surface"
-            className="bg-primary text-black"
-            onClick={handleNotifications}
-          >
-            Notifications
-          </Button>
-          <Button
-            variant="surface"
-            className="bg-primary text-black"
-            onClick={handleMessages}
-          >
-            Messages
-          </Button>
-          <Button
-            variant="surface"
-            className="bg-primary text-black"
-            onClick={handleSettings}
-          >
-            Settings
-          </Button>
-        </Flex>
+      this.setState({ isSaving: false });
 
-        <div className="absolute bottom-4 left-0 w-full px-4">
-          <Card
-            variant="surface"
-            className="bg-white shadow-lg rounded-lg flex items-center p-3 cursor-pointer hover:bg-gray-100 transition-colors duration-200"
-            onClick={handleLogout}
-          >
-            <Avatar
-              className="w-10 h-10 rounded-full bg-gray-300 mr-3"
-              alt="User Avatar"
-              fallback={<PersonIcon className="w-6 h-6 text-black" />}
-            />
-            <Text className="text-black font-medium">Logout</Text>
-          </Card>
-        </div>
-      </div>
-    </>
-  );
-};
+      this.props.onClose();
+    } catch (error) {
+      console.error('Failed to save data:', error);
+      this.setState({ isSaving: false });
+    }
+  };
+
+  render() {
+    const { isOpen, onClose } = this.props;
+    const { name, username, isSaving } = this.state;
+
+    return (
+      <Dialog open={isOpen} onOpenChange={onClose}>
+        <DialogContent className="sm:max-w-[525px]">
+          <DialogHeader>
+            <DialogTitle>Edit Profile</DialogTitle>
+            <DialogDescription>
+              Make changes to your profile here. Click save when you are done.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="name" className="text-right">
+                Name
+              </Label>
+              <Input
+                id="name"
+                value={name}
+                onChange={this.handleChange('name')}
+                className="col-span-3"
+              />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="username" className="text-right">
+                Username
+              </Label>
+              <Input
+                id="username"
+                value={username}
+                onChange={this.handleChange('username')}
+                className="col-span-3"
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <button
+              className={`${
+                isSaving ? 'bg-gray-400' : 'bg-gray-500'
+              } text-white rounded-full p-1 w-32 mx-auto`}
+              type="button"
+              onClick={this.handleSave}
+              disabled={isSaving}
+            >
+              {isSaving ? 'Saving...' : 'Save changes'}
+            </button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    );
+  }
+}
 
 export default RightSideBar;
