@@ -39,4 +39,6 @@ export const ApiQueryKey = {
   bloodGroupCreate: 'bloodGroupCreate',
   bloodGroup: 'bloodGroup',
   businessEntity: 'businessEntity',
+  doctors: 'doctors',
+  doctorsCreate: 'doctorsCreate',
 };

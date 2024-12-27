@@ -40,4 +40,6 @@ export enum Navigation {
   CreateUserHealthParam = '/masters/userHealthParam/create',
   CreateLabTestMaster = '/masters/labTestMaster/create',
   BusinessEntity = '/testController/businessEntity',
+  doctorsList = '/doctorsController',
+  DoctorCreate = "/doctorsController/create",
 }

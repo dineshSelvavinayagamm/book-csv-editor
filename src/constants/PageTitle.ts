@@ -55,4 +55,7 @@ export const PageTitle = {
   CreateBloodGroup: 'Create Blood Group',
   BloodGroupDetails: 'Blood Group Details',
   BusinessEntity: 'Business Entity',
+  DoctorsList: 'Doctors List',
+  DoctorsCreate: 'Create Doctors',
+  DoctorsDetails: 'Doctors Details',
 };

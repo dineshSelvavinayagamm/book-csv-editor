@@ -74,4 +74,8 @@ export const ApiEndpoints = {
   bloodGroup: '/api/v1/testMaster/bloodGroup',
   bloodGroupDetail: '/api/v1/testMaster/bloodGroup',
   deleteMasterUserHealthParam: '/api/v1/master/userhealthparam/delete',
+  doctorsList: '/api/doctor/all',
+  doctorDetail: '/api/doctor',
+  createDoctor: '/api/doctor/create',
+  deleteDoctor: '/api/doctor/delete',
 };

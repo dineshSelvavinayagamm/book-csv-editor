@@ -3,6 +3,7 @@
 import React from 'react';
 import { ValueIcon, AvatarIcon, StarFilledIcon, TargetIcon } from '@radix-ui/react-icons';
 import { Navigation } from './Navigations';
+import { title } from 'process';
 
 // icon will support both URL or children
 export const SIDE_BAR_MENU = [
@@ -63,6 +64,11 @@ export const SIDE_BAR_MENU = [
         route: Navigation.Country,
         icon: <ValueIcon />,
       },
+      {
+        title: 'Doctor',
+        route: Navigation.doctorsList,
+        icon: <ValueIcon />,
+      }
     ],
   },
   {
