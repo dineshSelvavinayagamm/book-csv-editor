@@ -1,5 +1,11 @@
 export const ApiQueryKey = {
   accessGroups: 'accessGroups',
+  hospitalcontrol: 'hospitalcontrol',
+  cliniccontrol: 'cliniccontrol',
+  BusinessAssociatecontrol: 'BusinessAssociatecontrol',
+  clinicusercreate: 'clinicusercreate',
+  Hospitalusercreate: 'Hospitalusercreate',
+  BussinessAssociateUserCreate: 'BussinessAssociateCreate',
   accesssecurityRolePrivilege: 'accesssecurityRolePrivilege',
   accessSecurityGroupRole: 'accessSecurityGroupRole',
   accessRoles: 'accessRoles',

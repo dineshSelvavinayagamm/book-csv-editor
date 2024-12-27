@@ -15,7 +15,7 @@ import * as Toast from '@radix-ui/react-toast';
 interface GroupData {
   oidPkFld: number;
   nameFld: string;
-} 
+}
 
 interface Userdata {
   oidPkFld: number;
@@ -24,33 +24,35 @@ interface Userdata {
 
 const formJson: FieldAttributes[] = [
   {
-    name: 'securityGroup', 
+    name: 'securityGroup',
     label: 'Security Group',
     type: FieldType.SELECT,
     required: false,
-    options: [], 
-    schema: z.number().int().positive({ message: 'Please select a valid group' }),  },
+    options: [],
+    schema: z.number().int().positive({ message: 'Please select a valid group' }),
+  },
 
   {
-    name: 'user', 
+    name: 'user',
     label: 'User',
     type: FieldType.SELECT,
     required: false,
-    options: [], 
-    schema: z.number().int().positive({ message: 'Please select a valid user' }),  },
+    options: [],
+    schema: z.number().int().positive({ message: 'Please select a valid user' }),
+  },
 ];
 
 const SecurityGroupUserCreatePage: React.FC = () => {
   const router = useRouter();
-  const { updateTitle } = useAppHeader(); 
+  const { updateTitle } = useAppHeader();
 
 
   useEffect(() => {
     updateTitle(PageTitle.SecurityGroupUserCreate);
   }, [updateTitle, PageTitle]);
-  const [errors,setErrors] = useState<Partial<SecurityGroupUserForm>>({});
-  const [groupOptions,setGroupOptions] = useState<{label: string; value: string }[]>([]);
-  const [userOptions,setUserOptions] = useState<{label: string; value: string }[]>([]);
+  const [errors, setErrors] = useState<Partial<SecurityGroupUserForm>>({});
+  const [groupOptions, setGroupOptions] = useState<{ label: string; value: string }[]>([]);
+  const [userOptions, setUserOptions] = useState<{ label: string; value: string }[]>([]);
 
   const [securityGroupUserForm, setSecurityGroupUserForm] = useState(
     formJson.reduce(
@@ -60,10 +62,10 @@ const SecurityGroupUserCreatePage: React.FC = () => {
     ),
   );
 
-    const [toastMessage, setToastMessage] = useState<{
-        text: string;
-        isSuccess: boolean;
-      } | null>(null);
+  const [toastMessage, setToastMessage] = useState<{
+    text: string;
+    isSuccess: boolean;
+  } | null>(null);
 
   const createSecurityGroupUser = useMutation<void, Error, SecurityGroupUserForm>({
     mutationKey: [ApiQueryKey.SecurityGroupUserCreate],
@@ -85,7 +87,7 @@ const SecurityGroupUserCreatePage: React.FC = () => {
         label: group.nameFld,
         value: group.oidPkFld.toString(),
       }));
-      
+
       setGroupOptions(options);
     } catch (error) {
       console.error('Error fetching  group:', error);
@@ -108,11 +110,11 @@ const SecurityGroupUserCreatePage: React.FC = () => {
   useEffect(() => {
     fetchGroupOptions();
     fetchUserOptions();
-  },[]);
+  }, []);
 
   const validateForm = useCallback(
     (profileForm: SecurityGroupUserForm) => {
-      const newErrors:Record<string, string> = {};
+      const newErrors: Record<string, string> = {};
       formJson.forEach((field) => {
         try {
           field.schema.parse(profileForm[field.name as keyof SecurityGroupUserForm]);
@@ -152,13 +154,13 @@ const SecurityGroupUserCreatePage: React.FC = () => {
       const value = formData.get(field.name);
       if (field.name === 'securityGroup' || field.name === 'user') {
         const parsedValue = value ? parseInt(value as string, 10) : NaN;
-      updatedSecurityGroupUserForm[field.name as keyof SecurityGroupUserForm] = 
-        isNaN(parsedValue) ? 0 : parsedValue;  
-    } else {
-      updatedSecurityGroupUserForm[field.name as keyof SecurityGroupUserForm] = value as string;
-    }
-  });
-    setSecurityGroupUserForm({...updatedSecurityGroupUserForm});
+        updatedSecurityGroupUserForm[field.name as keyof SecurityGroupUserForm] =
+          isNaN(parsedValue) ? 0 : parsedValue;
+      } else {
+        updatedSecurityGroupUserForm[field.name as keyof SecurityGroupUserForm] = value as string;
+      }
+    });
+    setSecurityGroupUserForm({ ...updatedSecurityGroupUserForm });
 
     if (!validateForm(updatedSecurityGroupUserForm)) return;
     createSecurityGroupUser.mutate(updatedSecurityGroupUserForm);
@@ -169,7 +171,7 @@ const SecurityGroupUserCreatePage: React.FC = () => {
       formJson.reduce(
         (acc, field) => ({ ...acc, [field.name]: field.required ? '' : undefined }),
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        {} as  Record<string, any>,
+        {} as Record<string, any>,
       ),
     );
     router.push(Navigation.SecurityGroupUser);
@@ -178,25 +180,25 @@ const SecurityGroupUserCreatePage: React.FC = () => {
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       {formJson.map((field) => {
-        const fieldWithoptions ={
+        const fieldWithoptions = {
           ...field,
           options: field.name === 'securityGroup' ? groupOptions : field.name == 'user' ? userOptions : []
         };
 
-        return(
-        <Box key={field.name} className="flex flex-col space-y-2">
-          <Field
-            {...fieldWithoptions}
-           
-          />
-          {errors[fieldWithoptions.name as keyof SecurityGroupUserForm] && (
-            <p className="text-red-500 text-sm">
-              {errors[field.name as keyof SecurityGroupUserForm]}
-            </p>
-          )}
-        </Box>
-      );
-})}
+        return (
+          <Box key={field.name} className="flex flex-col space-y-2">
+            <Field
+              {...fieldWithoptions}
+
+            />
+            {errors[fieldWithoptions.name as keyof SecurityGroupUserForm] && (
+              <p className="text-red-500 text-sm">
+                {errors[field.name as keyof SecurityGroupUserForm]}
+              </p>
+            )}
+          </Box>
+        );
+      })}
 
       <div className="flex justify-end space-x-4">
         <button

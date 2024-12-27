@@ -65,6 +65,21 @@ export const SIDE_BAR_MENU = [
         icon: <ValueIcon />,
       },
       {
+        title: 'Hospital',
+        route: Navigation.Hospitallist,
+        icon: <ValueIcon />,
+      },
+      {
+        title: 'Clinic',
+        route: Navigation.Clinic,
+        icon: <ValueIcon />,
+      },
+      {
+        title: 'Bussiness Associate',
+        route: Navigation.BusinessAssociate,
+        icon: <ValueIcon />,
+      },
+      {
         title: 'Doctor',
         route: Navigation.doctorsList,
         icon: <ValueIcon />,
