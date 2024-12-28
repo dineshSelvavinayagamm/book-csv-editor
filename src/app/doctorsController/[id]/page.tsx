@@ -44,8 +44,12 @@ const DoctorDetailPage = () => {
 
     const tableData = [
         {
-            label: 'Doctor Name',
-            value: doctorData?.doctorNameFld || 'N/A',
+            label: 'Doctor FirstName',
+            value: doctorData?.doctorFirstNameFld || 'N/A',
+        },
+        {
+            label: 'Doctor LastName',
+            value: doctorData?.doctorLastNameFld || 'N/A',
         },
         {
             label: 'Email',
