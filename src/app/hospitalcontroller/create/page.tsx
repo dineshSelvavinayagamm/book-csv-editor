@@ -19,7 +19,7 @@ const formJson: FieldAttributes[] = [
         label: 'Hospital Name',
         type: FieldType.TEXT,
         required: true,
-        schema: z.string().nonempty('HospitalName is required'),
+        schema: z.string().nonempty('Hospital Name is required'),
     },
 
     {
@@ -27,7 +27,7 @@ const formJson: FieldAttributes[] = [
         label: 'Hospital Address',
         type: FieldType.TEXT,
         required: true,
-        schema: z.string().nonempty('HospitalAddress is required'),
+        schema: z.string().nonempty('Hospital Address is required'),
     },
     {
         name: 'hospitalPhoneFld',
@@ -58,7 +58,7 @@ const formJson: FieldAttributes[] = [
         label: 'Hospital Email',
         type: FieldType.TEXT,
         required: true,
-        schema: z.string().nonempty('HospitalEmail is required'),
+        schema: z.string().nonempty('Hospital Email is required'),
     },
 
     {
