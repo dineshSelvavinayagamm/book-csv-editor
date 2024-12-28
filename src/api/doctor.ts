@@ -3,16 +3,16 @@ import { getHttpClient } from '@/services/AxiosClient';
 
 
 export interface CreateDoctor {
-    doctorNameFld? : string;
+    doctorFirstNameFld? : string;
+    doctorLastNameFld? : string;
+    passwordFld? : string;
     doctorEmailFld? : string;
     doctorMobileFld? : string;
     doctorPhoneFld? : string;
     doctorSpecialityFld? : string;
     doctorQualificationFld? : string;
     doctorExperienceFld? : string;
-    doctorIsActiveFld?: string;
     doctorRemarksFld?: string;
-    userIdFkFld?: string;
 }
 
 export const getDoctorsList = async () => {

@@ -14,18 +14,20 @@ import { doctorCreate, CreateDoctor, getDoctorsList } from '@/api/doctor';
 import { getUserList } from '@/api';
 
 
-interface DoctorUserData {
-    oidPkFld: number;
-    firstNameFld: string;
-}
-
 const formJson: FieldAttributes[] = [
     {
-        name: 'doctorNameFld',
+        name: 'doctorFirstNameFld',
         label: 'Doctor Name',
         type: FieldType.TEXT,
         required: true,
         schema: z.string().min(1, 'Doctor Name is required'),
+    },
+    {
+        name: 'doctorLastNameFld',
+        label: 'Last Name',
+        type: FieldType.TEXT,
+        required: true,
+        schema: z.string().min(1, 'Last Name is required'),
     },
     {
         name: 'doctorEmailFld',
@@ -33,6 +35,17 @@ const formJson: FieldAttributes[] = [
         type: FieldType.TEXT,
         required: true,
         schema: z.string().email({ message: 'Invalid email address' }),
+    },
+    {
+        name: 'passwordFld',
+        label: 'Password',
+        type: FieldType.TEXT,
+        required: false,
+        schema: z
+            .string()
+            .min(8, { message: 'Password must be at least 8 characters long' })
+            .regex(/[A-Z]/, { message: 'Password must contain at least one uppercase letter' })
+            .regex(/[0-9]/, { message: 'Password must contain at least one number' }),
     },
     {
         name: 'doctorPhoneFld',
@@ -82,31 +95,6 @@ const formJson: FieldAttributes[] = [
         type: FieldType.TEXT,
         required: true,
         schema: z.string().min(1, 'Qualification is required'),
-    },
-    {
-        name: 'doctorIsActiveFld',
-        label: 'Active',
-        type: FieldType.SELECT,
-        required: true,
-        options: [
-            {
-                label: 'Active',
-                value: 'Y',
-            },
-            {
-                label: 'Inactive',
-                value: 'N',
-            },
-        ],
-        schema: z.string().min(1, 'Select Active Status'),
-    },
-    {
-        name: 'userIdFkFld',
-        label: 'User ID',
-        type: FieldType.SELECT,
-        required: false,
-        options: [],
-        schema: z.string().min(1, 'Select User '),
     },
     {
         name: 'doctorRemarksFld',
@@ -212,44 +200,19 @@ const DoctorCreate: React.FC = () => {
         router.push(Navigation.doctorsList);
     };
 
-    const fetchUserOptions = async () => {
-        try {
-            const { data } = await getUserList();
-            const options = data.map((user: DoctorUserData) => ({
-                label: user.firstNameFld,
-                value: user.oidPkFld.toString(),
-            }));
-            setTestOptions(options);
-            setCreateDoctor((prev) => ({
-                ...prev,
-                userIdFkFld: options.length > 0 ? options[0].value : '',
-            }));
-        } catch (error) {
-            console.error('Error fetching user list:', error);
-        }
-    };
-    useEffect(() => {
-        fetchUserOptions();
-    }, []);
 
     return (
         <form onSubmit={handleSubmit} className="space-y-6">
-            {formJson.map((field) => {
-                const fieldWithOptions =
-                    field.name === 'userIdFkFld' ? { ...field, options: testOptions }
-                        : field;
-                return (
-                    <Box key={fieldWithOptions.name} className="flex flex-col space-y-2">
-                        <Field {...fieldWithOptions} />
-                        {errors[fieldWithOptions.name as keyof CreateDoctor] && (
-                            <p className="text-red-500 text-sm">
-                                {errors[fieldWithOptions.name as keyof CreateDoctor]}
-                            </p>
-                        )}
-                    </Box>
-                );
-            })}
-
+            {formJson.map((field) => (
+                <Box key={field.name} className="flex flex-col space-y-2">
+                    <Field {...field} />
+                    {errors[field.name as keyof CreateDoctor] && (
+                        <p className="text-red-500 text-sm">
+                            {errors[field.name as keyof CreateDoctor]}
+                        </p>
+                    )}
+                </Box>
+            ))}
             <div className="flex justify-end space-x-4">
                 <button
                     type="button"

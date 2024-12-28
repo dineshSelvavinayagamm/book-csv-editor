@@ -46,7 +46,7 @@ const doctorsController = () => {
     };
 
     const columns = [
-        { accessor: 'doctorNameFld', header: 'Doctor Name' },
+        { accessor: 'doctorFirstNameFld', header: 'Doctor Name' },
         { accessor: 'doctorEmailFld', header: 'Email' },
         { accessor: 'doctorPhoneFld', header: 'Mobile' },
         { accessor: 'doctorIsActiveFld', header: 'Active' },
