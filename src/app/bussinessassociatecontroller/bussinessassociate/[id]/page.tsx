@@ -68,6 +68,10 @@ const BussinessAssociateDetailPage = () => {
             label: 'Bussinessassociate Active',
             value: bussinessassociateData?.businessAssociateIsActiveFld || 'N/A',
         },
+        {
+            label: 'Bussinessassociate Remarks',
+            value: bussinessassociateData?.businessAssociateRemarksFld || 'N/A',
+        },
 
     ];
 

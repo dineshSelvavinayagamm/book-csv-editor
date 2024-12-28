@@ -34,14 +34,24 @@ const formJson: FieldAttributes[] = [
         label: 'Clinic Phone_No',
         type: FieldType.TEXT,
         required: true,
-        schema: z.string().nonempty('clinicMobileFld is required'),
+        schema: z.string().max(10, {
+            message: 'Phone number must be 10 characters',
+        })
+            .min(10, {
+                message: 'Phone number must be 10 characters',
+            }),
     },
     {
         name: 'clinicMobileFld',
         label: 'Clinic Mobile_No',
         type: FieldType.TEXT,
         required: true,
-        schema: z.string().nonempty('Clinic Mobile_No is required'),
+        schema: z.string().max(10, {
+            message: 'Phone number must be 10 characters',
+        })
+            .min(10, {
+                message: 'Phone number must be 10 characters',
+            }),
     },
     {
         name: 'clinicEmailFld',
@@ -67,6 +77,13 @@ const formJson: FieldAttributes[] = [
             },
         ],
         schema: z.string().nonempty('Clinic Active is required'),
+    },
+    {
+        name: 'clinicRemarksFld',
+        label: 'Clinic Remarks',
+        type: FieldType.TEXT,
+        required: true,
+        schema: z.string(),
     },
 ];
 

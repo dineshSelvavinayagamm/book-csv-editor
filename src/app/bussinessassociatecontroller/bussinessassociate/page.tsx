@@ -45,14 +45,7 @@ const BusinessAssociate = () => {
             accessor: 'businessAssociateNameFld',
             header: 'BusinessAssociate Name',
         },
-        {
-            accessor: 'businessAssociateAddressFld',
-            header: 'BusinessAssociate Address',
-        },
-        {
-            accessor: 'businessAssociatePhoneFld',
-            header: 'BusinessAssociate Phone_No',
-        },
+
         {
             accessor: 'businessAssociateMobileFld',
             header: 'BusinessAssociate Mobile_No',
@@ -65,6 +58,7 @@ const BusinessAssociate = () => {
             accessor: 'businessAssociateIsActiveFld',
             header: 'BusinessAssociate Active',
         },
+
 
         {
             accessor: 'actions',

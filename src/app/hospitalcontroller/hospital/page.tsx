@@ -43,28 +43,22 @@ const Hospital = () => {
     const columns = [
         {
             accessor: 'hospitalNameFld',
-            header: 'HospitalName',
+            header: 'Hospital Name',
         },
-        {
-            accessor: 'hospitalAddressFld',
-            header: 'HospitalAddress',
-        },
-        {
-            accessor: 'hospitalPhoneFld',
-            header: 'HospitalPhone_No',
-        },
+
         {
             accessor: 'hospitalMobileFld',
-            header: 'HospitalMobile_No',
+            header: 'Hospital Mobile_No',
         },
         {
             accessor: 'hospitalEmailFld',
-            header: 'HospitalEmail',
+            header: 'Hospital Email',
         },
         {
             accessor: 'hospitalIsActiveFld',
             header: 'Hospital Active',
         },
+
         {
             accessor: 'actions',
             header: 'Actions',

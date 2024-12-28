@@ -38,14 +38,24 @@ const formJson: FieldAttributes[] = [
         label: 'BusinessAssociate Phone_No',
         type: FieldType.TEXT,
         required: true,
-        schema: z.string().nonempty('BusinessAssociate Phone_No is required'),
+        schema: z.string().max(10, {
+            message: 'Phone number must be 10 characters',
+        })
+            .min(10, {
+                message: 'Phone number must be 10 characters',
+            }),
     },
     {
         name: 'businessAssociateMobileFld',
         label: 'BusinessAssociate Mobile_No',
         type: FieldType.TEXT,
         required: true,
-        schema: z.string().nonempty('BusinessAssociate Mobile_No is required'),
+        schema: z.string().max(10, {
+            message: 'Phone number must be 10 characters',
+        })
+            .min(10, {
+                message: 'Phone number must be 10 characters',
+            }),
     },
     {
         name: 'businessAssociateEmailFld',
@@ -74,12 +84,20 @@ const formJson: FieldAttributes[] = [
     },
 
     {
+        name: 'businessAssociateRemarksFld',
+        label: 'BusinessAssociate Remarks',
+        type: FieldType.TEXT,
+        required: true,
+        schema: z.string(),
+    },
+
+    {
         name: 'userIdFkFld',
         label: 'User Name',
         type: FieldType.SELECT,
         required: false,
         options: [],
-        schema: z.number().int().positive({ message: 'Please select a valid user' }),
+        schema: z.string().nonempty({ message: 'Please select a valid user' }),
     },
 ];
 

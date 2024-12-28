@@ -45,14 +45,7 @@ const Clinic = () => {
             accessor: 'clinicNameFld',
             header: 'Clinic Name',
         },
-        {
-            accessor: 'clinicAddressFld',
-            header: 'Clinic Address',
-        },
-        {
-            accessor: 'clinicPhoneFld',
-            header: 'Clinic Phone_No',
-        },
+
         {
             accessor: 'clinicMobileFld',
             header: 'Clinic Mobile_No',
@@ -65,6 +58,7 @@ const Clinic = () => {
             accessor: 'clinicIsActiveFld',
             header: 'Clinic Active',
         },
+
         {
             accessor: 'actions',
             header: 'Actions',

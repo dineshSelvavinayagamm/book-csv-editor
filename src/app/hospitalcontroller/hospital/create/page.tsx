@@ -16,7 +16,7 @@ import { HospitalUserCreate, Hospitalform } from '@/api/hospitalcontrol';
 const formJson: FieldAttributes[] = [
     {
         name: 'hospitalNameFld',
-        label: 'HospitalName',
+        label: 'Hospital Name',
         type: FieldType.TEXT,
         required: true,
         schema: z.string().nonempty('HospitalName is required'),
@@ -24,28 +24,38 @@ const formJson: FieldAttributes[] = [
 
     {
         name: 'hospitalAddressFld',
-        label: 'HospitalAddress',
+        label: 'Hospital Address',
         type: FieldType.TEXT,
         required: true,
         schema: z.string().nonempty('HospitalAddress is required'),
     },
     {
         name: 'hospitalPhoneFld',
-        label: 'HospitalPhone_No',
+        label: 'Hospital Phone_No',
         type: FieldType.TEXT,
         required: true,
-        schema: z.string().nonempty('HospitalPhone_No is required'),
+        schema: z.string().max(10, {
+            message: 'Phone number must be 10 characters',
+        })
+            .min(10, {
+                message: 'Phone number must be 10 characters',
+            }),
     },
     {
         name: 'hospitalMobileFld',
-        label: 'HospitalMobile_No',
+        label: 'Hospital Mobile_No',
         type: FieldType.TEXT,
         required: true,
-        schema: z.string().nonempty('HospitalMobile_No is required'),
+        schema: z.string().max(10, {
+            message: 'Phone number must be 10 characters',
+        })
+            .min(10, {
+                message: 'Phone number must be 10 characters',
+            }),
     },
     {
         name: 'hospitalEmailFld',
-        label: 'HospitalEmail',
+        label: 'Hospital Email',
         type: FieldType.TEXT,
         required: true,
         schema: z.string().nonempty('HospitalEmail is required'),
@@ -67,6 +77,13 @@ const formJson: FieldAttributes[] = [
             },
         ],
         schema: z.string().nonempty('Hospital Active is required'),
+    },
+    {
+        name: 'hospitalRemarksFld',
+        label: 'Hospital Remarks',
+        type: FieldType.TEXT,
+        required: true,
+        schema: z.string(),
     },
 ];
 

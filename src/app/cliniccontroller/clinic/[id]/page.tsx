@@ -65,8 +65,8 @@ const ClinicDetailPage = () => {
             value: clinicData?.clinicEmailFld || 'N/A',
         },
         {
-            label: 'Clinic Active',
-            value: clinicData?.clinicIsActiveFld || 'N/A',
+            label: 'Clinic Remarks',
+            value: clinicData?.clinicRemarksFld || 'N/A',
         },
     ];
 

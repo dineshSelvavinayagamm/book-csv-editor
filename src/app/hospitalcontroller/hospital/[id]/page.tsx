@@ -68,6 +68,10 @@ const HospitalDetailPage = () => {
             label: 'Hospital Active',
             value: hospitalData?.hospitalIsActiveFld || 'N/A',
         },
+        {
+            label: 'Hospital Remarks',
+            value: hospitalData?.hospitalRemarksFld || 'N/A',
+        },
     ];
 
     return (
