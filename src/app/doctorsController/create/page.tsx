@@ -11,16 +11,15 @@ import { z, ZodError } from 'zod';
 import { useAppHeader } from '@/app/hooks/appHeader';
 import * as Toast from '@radix-ui/react-toast';
 import { doctorCreate, CreateDoctor, getDoctorsList } from '@/api/doctor';
-import { getUserList } from '@/api';
 
 
 const formJson: FieldAttributes[] = [
     {
         name: 'doctorFirstNameFld',
-        label: 'Doctor Name',
+        label: 'First Name',
         type: FieldType.TEXT,
         required: true,
-        schema: z.string().min(1, 'Doctor Name is required'),
+        schema: z.string().min(1, 'First Name is required'),
     },
     {
         name: 'doctorLastNameFld',

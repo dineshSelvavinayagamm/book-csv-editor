@@ -18,7 +18,7 @@ const Header = ({ onClickMenu, title }: HeaderProps) => {
         </Flex>
 
         <Flex direction="row" gap="4" align="center">
-          <TextField.Root placeholder="Search the docs…">
+          <TextField.Root placeholder="Search...">
             <TextField.Slot>
               <MagnifyingGlassIcon height="16" width="16" />
             </TextField.Slot>

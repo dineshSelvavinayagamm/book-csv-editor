@@ -12,7 +12,7 @@ const TextInput: React.FC<InputFieldProps> = ({ label, name, type }) => {
         name={name}
         type={type}
         size="3"
-        placeholder="Search the docs…"
+        placeholder={`Enter ${label}`}
       />
     </Box>
   );
