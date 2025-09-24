@@ -9,8 +9,6 @@ import { AppTable } from '@/components/Table';
 
 const EnterpriseDetailPage = () => {
   const { id } = useParams();
-  console.log('Fetching details for ID:', id);
-
   const { data, isLoading } = useQuery({
     queryKey: ['enterpriseDetail', id],
     queryFn: () => getMasterEnterpriseDetail(id as string),
@@ -24,7 +22,7 @@ const EnterpriseDetailPage = () => {
       </div>
     );
 
-  const enterpriseData = data?.data;
+  const enterpriseData = data;
 
   const columns = [
     {
@@ -37,20 +35,15 @@ const EnterpriseDetailPage = () => {
     },
   ];
 
-  const tableData = [
-    {
-      label: 'Enterprise Name',
-      value: enterpriseData?.enterpriseNameFld || 'N/A',
-    },
-    {
-      label: 'Enterprise ID',
-      value: enterpriseData?.enterpriseIDFld || 'N/A',
-    },
-    {
-      label: 'Remarks',
-      value: enterpriseData?.remarksFld || 'N/A',
-    },
-  ];
+  const tableData = enterpriseData
+    ? Object.entries(enterpriseData).map(([key, value]) => ({
+        label: key,
+        value:
+          typeof value === 'object' && value !== null
+            ? JSON.stringify(value)
+            : String(value ?? 'N/A'),
+      }))
+    : [];
 
   return (
     <div className="p-4">

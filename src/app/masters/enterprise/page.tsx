@@ -1,5 +1,5 @@
 'use client';
-import { getEnterprise } from '@/api/Masters';
+import { getEnterPrise } from '@/api/Masters';
 import { useAppHeader } from '@/app/hooks/appHeader';
 import MoreActions from '@/components/MoreActions/MoreActions';
 import { AppTable } from '@/components/Table';
@@ -34,9 +34,9 @@ const columns = [
 const Enterprise = () => {
   const { isPending, data, isFetching } = useQuery({
     queryKey: [ApiQueryKey.enterprise],
-    queryFn: getEnterprise,
+    queryFn: getEnterPrise,
   });
-  const { updateTitle } = useAppHeader(); 
+  const { updateTitle } = useAppHeader();
 
   useEffect(() => {
     updateTitle(PageTitle.Enterprice);
@@ -45,7 +45,7 @@ const Enterprise = () => {
     <div>
       <AppTable
         columns={columns}
-        data={data?.data ?? []}
+        data={data ?? []}
         isLoading={isPending || isFetching}
       />
     </div>

@@ -70,7 +70,7 @@ const LeftSideBar = () => {
     <Sidebar>
       <SidebarHeader>
         <div className="flex items-center justify-between px-4 py-2">
-          {!isCollapsed && <h1 className="text-lg font-bold">Nexycare Diagnostics</h1>}
+          {!isCollapsed && <h1 className="text-lg font-bold">Notion Press Media</h1>}
         </div>
       </SidebarHeader>
 

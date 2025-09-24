@@ -9,7 +9,7 @@ interface Column {
 }
 
 interface Row {
-  [key: string]: string | number;
+  [key: string]: string | number | boolean | null | undefined;
 }
 
 interface AppTableProps {

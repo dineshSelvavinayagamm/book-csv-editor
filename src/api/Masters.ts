@@ -1,5 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { ApiEndpoints } from '@/constants/Endpoints';
+import { enterpriseDetailMap } from '@/data/enterPriseDetailDummyData';
+import { getEnterpriseDummyData } from '@/data/getEnterpriseDummyData';
 import { getHttpClient } from '@/services/AxiosClient';
 
 export interface UserPreferenceForm {
@@ -36,10 +38,11 @@ export const getZipCode = async () => {
   return result;
 };
 
-export const getEnterprise = async () => {
-  const result = await getHttpClient(ApiEndpoints.enterprise, 'GET');
-  return result;
+export const getEnterPrise = async () => {
+  await new Promise((resolve) => setTimeout(resolve, 500));
+  return getEnterpriseDummyData;
 };
+
 
 export const getCountry = async () => {
   const result = await getHttpClient(ApiEndpoints.country, 'GET');
@@ -51,12 +54,17 @@ export const getStateDetail = async (id: string) => {
   return result;
 };
 
+// export const getMasterEnterpriseDetail = async (id: string) => {
+//   const result = await getHttpClient(
+//     `${ApiEndpoints.masterEnterpriseDetail}/${id}`,
+//     'GET',
+//   );
+//   return result;
+// };
+
 export const getMasterEnterpriseDetail = async (id: string) => {
-  const result = await getHttpClient(
-    `${ApiEndpoints.masterEnterpriseDetail}/${id}`,
-    'GET',
-  );
-  return result;
+  await new Promise((resolve) => setTimeout(resolve, 500)); // simulate API delay
+  return enterpriseDetailMap[id] || null;
 };
 
 export const getUserHealthParam = async () => {
