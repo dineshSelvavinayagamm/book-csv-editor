@@ -1,6 +1,9 @@
 export * from './Navigations';
 export * from './SidebarMenu';
-export * from './Endpoints';
 export * from './Config';
 export * from './QueryKey';
-export * from './PageTitle';    
+export * from './PageTitle';
+
+export const ApiEndpoints = {
+  login: '/api/login',
+};
