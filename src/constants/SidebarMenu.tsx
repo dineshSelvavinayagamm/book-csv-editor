@@ -12,6 +12,6 @@ export const SIDE_BAR_MENU = [
   {
     title: 'CSV Editor',
     icon: 'https://img.icons8.com/?size=100&id=83326&format=png&color=ffffff',
-    items: [{ title: 'Sample CSV', route: Navigation.CSV, icon: <ValueIcon /> }],
+    items: [{ title: 'CSV Dashboard', route: Navigation.CSV, icon: <ValueIcon /> }],
   },
 ];

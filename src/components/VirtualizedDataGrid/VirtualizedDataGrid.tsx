@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useMemo, useState, useCallback, useRef } from 'react';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import clsx from 'clsx';
@@ -5,7 +6,6 @@ import EditCell from '../EditCell/EditCell';
 
 export interface RowObj {
   _id: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [key: string]: any;
 }
 
@@ -33,8 +33,8 @@ export default function VirtualizedDataGrid({
   const parentRef = useRef<HTMLDivElement>(null);
   const [sortBy, setSortBy] = useState<string | null>(null);
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('asc');
+  const [editingRowId, setEditingRowId] = useState<string | null>(null);
 
-  // Filter rows
   const filtered = useMemo(() => {
     if (!filter) return rows;
     const q = filter.toLowerCase();
@@ -47,7 +47,6 @@ export default function VirtualizedDataGrid({
     );
   }, [rows, filter, columns]);
 
-  // Sort rows
   const sorted = useMemo(() => {
     if (!sortBy) return filtered;
     const copy = [...filtered];
@@ -73,7 +72,6 @@ export default function VirtualizedDataGrid({
   };
 
   const handleCellChange = useCallback(
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (rowId: string, col: string, value: any) => {
       setRows((prevRows) =>
         prevRows.map((r) => (r._id === rowId ? { ...r, [col]: value } : r)),
@@ -82,7 +80,6 @@ export default function VirtualizedDataGrid({
     [setRows],
   );
 
-  // Virtualizer
   const rowVirtualizer = useVirtualizer({
     count: pageSlice.length,
     getScrollElement: () => parentRef.current,
@@ -91,24 +88,24 @@ export default function VirtualizedDataGrid({
   });
 
   return (
-    <div className="bg-white rounded shadow overflow-hidden">
+    <div className="bg-gradient-to-br from-slate-50 to-white rounded-xl shadow-lg border border-slate-200 overflow-hidden">
       {/* Header */}
-      <div className="p-3 flex items-center gap-3 border-b">
-        <div className="text-sm text-slate-500">
+      <div className="p-3 flex items-center gap-3 border-b bg-gradient-to-r from-indigo-500 to-purple-500 text-white">
+        <div className="text-sm font-medium">
           {sorted.length} rows — page {page} / {totalPages}
         </div>
         <div className="ml-auto flex items-center gap-2">
           <button
             disabled={page <= 1}
             onClick={() => setCurrentPage(page - 1)}
-            className="px-2 py-1 border rounded disabled:opacity-50"
+            className="px-3 py-1 rounded-lg bg-white/20 text-white hover:bg-white/30 disabled:opacity-40 transition"
           >
             Prev
           </button>
           <button
             disabled={page >= totalPages}
             onClick={() => setCurrentPage(page + 1)}
-            className="px-2 py-1 border rounded disabled:opacity-50"
+            className="px-3 py-1 rounded-lg bg-white/20 text-white hover:bg-white/30 disabled:opacity-40 transition"
           >
             Next
           </button>
@@ -116,7 +113,7 @@ export default function VirtualizedDataGrid({
       </div>
 
       {/* Column headers */}
-      <div className="flex bg-slate-100 border-b">
+      <div className="flex bg-gradient-to-r from-slate-100 to-slate-200 border-b">
         {columns.map((col) => (
           <div
             key={col}
@@ -124,7 +121,7 @@ export default function VirtualizedDataGrid({
               flex: col === '_id' ? '0 0 120px' : 1,
               minWidth: col === '_id' ? 120 : 150,
             }}
-            className="p-2 font-medium cursor-pointer"
+            className="p-2 font-semibold text-slate-700 hover:text-indigo-600 cursor-pointer transition"
             onClick={() => toggleSort(col)}
           >
             {col} {sortBy === col ? (sortDir === 'asc' ? '↑' : '↓') : ''}
@@ -149,6 +146,8 @@ export default function VirtualizedDataGrid({
               ? columns.some((c) => String(original[c] ?? '') !== String(row[c] ?? ''))
               : false;
 
+            const isEditing = editingRowId === row._id;
+
             return (
               <div
                 key={row._id}
@@ -159,40 +158,70 @@ export default function VirtualizedDataGrid({
                   width: '100%',
                 }}
                 className={clsx(
-                  'flex items-stretch border-b',
+                  'flex items-stretch border-b transition-colors duration-200',
                   rowChanged
-                    ? 'bg-yellow-50'
+                    ? 'bg-yellow-100'
                     : virtualRow.index % 2
-                      ? 'bg-white'
-                      : 'bg-slate-50',
+                      ? 'bg-white hover:bg-indigo-50'
+                      : 'bg-slate-50 hover:bg-indigo-50',
                 )}
               >
-                {columns.map((col) => {
-                  const val = row[col];
-                  const origVal = original ? original[col] : undefined;
-                  const changed =
-                    origVal !== undefined && String(origVal) !== String(val);
-                  return (
-                    <div
-                      key={col}
-                      style={{
-                        flex: col === '_id' ? '0 0 120px' : 1,
-                        minWidth: col === '_id' ? 120 : 150,
-                      }}
-                      className="p-2"
-                    >
-                      {col === '_id' ? (
-                        <div className="text-xs text-slate-600">{val}</div>
-                      ) : (
-                        <EditCell
-                          value={val}
-                          onChange={(v) => handleCellChange(row._id, col, v)}
-                          highlight={changed}
-                        />
+                {isEditing ? (
+                  // 🔹 MERGED ROW IN EDIT MODE
+                  <div className="p-4 w-full bg-indigo-50">
+                    <div className="flex flex-col gap-3">
+                      {columns.map((col) =>
+                        col === '_id' ? (
+                          <div key={col} className="text-xs font-medium text-slate-600">
+                            ID: {row[col]}
+                          </div>
+                        ) : (
+                          <div key={col} className="flex gap-2 items-center">
+                            <span className="w-32 text-sm font-medium text-slate-700">
+                              {col}:
+                            </span>
+                            <EditCell
+                              value={row[col]}
+                              onChange={(v) => handleCellChange(row._id, col, v)}
+                              highlight
+                              onFocus={() => setEditingRowId(row._id)}
+                              onBlur={() => setEditingRowId(null)}
+                            />
+                          </div>
+                        ),
                       )}
                     </div>
-                  );
-                })}
+                  </div>
+                ) : (
+                  // 🔹 NORMAL ROW
+                  columns.map((col) => {
+                    const val = row[col];
+                    const origVal = original ? original[col] : undefined;
+                    const changed =
+                      origVal !== undefined && String(origVal) !== String(val);
+                    return (
+                      <div
+                        key={col}
+                        style={{
+                          flex: col === '_id' ? '0 0 120px' : 1,
+                          minWidth: col === '_id' ? 120 : 150,
+                        }}
+                        className="p-2 text-sm"
+                      >
+                        {col === '_id' ? (
+                          <div className="text-xs font-medium text-slate-600">{val}</div>
+                        ) : (
+                          <EditCell
+                            value={val}
+                            onChange={(v) => handleCellChange(row._id, col, v)}
+                            highlight={changed}
+                            onFocus={() => setEditingRowId(row._id)}
+                          />
+                        )}
+                      </div>
+                    );
+                  })
+                )}
               </div>
             );
           })}

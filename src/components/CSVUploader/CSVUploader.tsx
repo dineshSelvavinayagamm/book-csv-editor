@@ -1,6 +1,7 @@
 'use client';
 import React, { useRef, useState } from 'react';
 import { parseCSVFile } from '@/lib/csv';
+import { Upload } from 'lucide-react'; // Assuming lucide-react for icons
 
 interface CSVUploaderProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -41,24 +42,29 @@ export default function CSVUploader({ onData }: CSVUploaderProps) {
   }
 
   return (
-    <div className="bg-white rounded shadow p-4 flex flex-col gap-4">
-      <label className="block text-sm font-medium text-slate-700">Upload CSV</label>
+    <div className="bg-gradient-to-br from-white to-gray-50 rounded-xl shadow-lg p-6 flex flex-col gap-4 border border-gray-200">
+      <label className="block text-lg font-semibold text-gray-800">
+        Upload Your CSV File
+      </label>
 
       <div className="flex items-center gap-4">
         <button
           type="button"
-          className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+          className="px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-all duration-300 flex items-center gap-2 shadow-md"
           onClick={() => fileRef.current?.click()}
         >
+          <Upload size={18} />
           Choose File
         </button>
 
-        <span className="text-sm text-slate-600">{fileName || 'No file selected'}</span>
+        <span className="text-sm text-gray-700 font-medium">
+          {fileName || 'No file selected'}
+        </span>
 
         {fileName && (
           <button
             type="button"
-            className="px-2 py-1 text-xs bg-red-500 text-white rounded hover:bg-red-600"
+            className="px-4 py-2 text-sm bg-red-500 text-white rounded-lg hover:bg-red-600 transition-all duration-300 shadow-md"
             onClick={clearFile}
           >
             Clear
@@ -78,21 +84,23 @@ export default function CSVUploader({ onData }: CSVUploaderProps) {
       <div className="flex-1">
         {loading && (
           <>
-            <div className="text-sm">Parsing... rows parsed: {parsedRowsCount}</div>
-            <div className="w-full bg-slate-200 h-2 rounded mt-2">
+            <div className="text-sm text-indigo-600 font-medium">
+              Parsing... rows parsed: {parsedRowsCount}
+            </div>
+            <div className="w-full bg-gray-200 h-3 rounded-full mt-2 overflow-hidden">
               <div
                 style={{
                   width: Math.min(100, Math.round((parsedRowsCount / 10000) * 100)) + '%',
                 }}
-                className="h-2 rounded bg-slate-600"
+                className="h-3 rounded-full bg-gradient-to-r from-indigo-500 to-purple-500 transition-all duration-500"
               />
             </div>
           </>
         )}
 
         {!loading && (
-          <div className="text-sm text-slate-500">
-            Streaming parse enabled. Supports large CSVs.
+          <div className="text-sm text-gray-600 italic">
+            Streaming parse enabled. Supports large CSVs up to 10k+ rows.
           </div>
         )}
       </div>
