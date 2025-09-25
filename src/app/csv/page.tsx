@@ -14,13 +14,21 @@ export default function CsvMainPage() {
   useEffect(() => {
     updateTitle(PageTitle.CSVEditor);
   }, [updateTitle]);
+
   const [columns, setColumns] = useState<string[]>([]);
   const [rows, setRows] = useState<RowObj[]>([]);
   const [originalRows, setOriginalRows] = useState<RowObj[]>([]);
-
   const [pageSize, setPageSize] = useState<number>(50);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [filter, setFilter] = useState<string>('');
+
+  const handleClear = () => {
+    setColumns([]);
+    setRows([]);
+    setOriginalRows([]);
+    setCurrentPage(1);
+    setFilter('');
+  };
 
   return (
     <div className="space-y-6 p-6 bg-gradient-to-br from-indigo-50 via-white to-purple-50 min-h-screen">
@@ -57,6 +65,7 @@ export default function CsvMainPage() {
             setOriginalRows(parsedRows.map((r) => ({ ...r })));
             setCurrentPage(1);
           }}
+          onClear={handleClear}
         />
       </div>
 

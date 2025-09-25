@@ -6,13 +6,15 @@ import { Upload } from 'lucide-react'; // Assuming lucide-react for icons
 interface CSVUploaderProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onData: (cols: string[], rows: any[]) => void;
+  onClear: () => void;
 }
 
-export default function CSVUploader({ onData }: CSVUploaderProps) {
+export default function CSVUploader({ onData, onClear }: CSVUploaderProps) {
   const fileRef = useRef<HTMLInputElement | null>(null);
   const [loading, setLoading] = useState(false);
   const [parsedRowsCount, setParsedRowsCount] = useState(0);
   const [fileName, setFileName] = useState<string>('');
+  const [inputKey, setInputKey] = useState(0);
 
   async function handleFile(file?: File) {
     if (!file) return;
@@ -39,6 +41,8 @@ export default function CSVUploader({ onData }: CSVUploaderProps) {
     if (fileRef.current) {
       fileRef.current.value = ''; // reset the file input
     }
+    setInputKey((prev) => prev + 1); // Force re-mount the input to ensure complete reset
+    onClear(); // Call the parent to clear table data
   }
 
   return (
@@ -74,6 +78,7 @@ export default function CSVUploader({ onData }: CSVUploaderProps) {
 
       {/* hidden native file input */}
       <input
+        key={inputKey}
         ref={fileRef}
         type="file"
         accept=".csv,.txt,text/csv,text/plain"
