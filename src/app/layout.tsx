@@ -18,8 +18,8 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: 'Nexycare',
-  description: 'Nexycare',
+  title: 'Notion Press Media',
+  description: 'Notion Press Media',
 };
 
 const RootLayout = ({

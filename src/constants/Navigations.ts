@@ -1,6 +1,7 @@
 export enum Navigation {
-  Home = '/',
+  Home = '/home',
   Login = '/login',
+  CSV = '/csv',
   Hospitallist = '/hospitalcontroller',
   BusinessAssociate = '/bussinessassociatecontroller',
   Clinic = '/cliniccontroller',
@@ -47,5 +48,5 @@ export enum Navigation {
   CreateLabTestMaster = '/masters/labTestMaster/create',
   BusinessEntity = '/testController/businessEntity',
   doctorsList = '/doctorsController',
-  DoctorCreate = "/doctorsController/create",
+  DoctorCreate = '/doctorsController/create',
 }
