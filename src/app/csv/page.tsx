@@ -21,6 +21,7 @@ export default function CsvMainPage() {
   const [pageSize, setPageSize] = useState<number>(50);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [filter, setFilter] = useState<string>('');
+  const [isFileUploaded, setIsFileUploaded] = useState<boolean>(false);
 
   const handleClear = () => {
     setColumns([]);
@@ -28,6 +29,7 @@ export default function CsvMainPage() {
     setOriginalRows([]);
     setCurrentPage(1);
     setFilter('');
+    setIsFileUploaded(false);
   };
 
   return (
@@ -39,7 +41,6 @@ export default function CsvMainPage() {
         </p>
       </h1>
 
-      {/* Toolbar */}
       <div className="bg-white rounded-xl shadow-md border border-slate-200 p-4">
         <EnhancedToolbar
           columns={columns}
@@ -53,10 +54,11 @@ export default function CsvMainPage() {
           }}
           filter={filter}
           setFilter={setFilter}
+          isFileUploaded={isFileUploaded}
+          setIsFileUploaded={setIsFileUploaded}
         />
       </div>
 
-      {/* CSV File Upload */}
       <div className="bg-white rounded-xl shadow-md border border-slate-200 p-6">
         <CSVUploader
           onData={(parsedColumns: string[], parsedRows: RowObj[]) => {
@@ -64,12 +66,14 @@ export default function CsvMainPage() {
             setRows(parsedRows);
             setOriginalRows(parsedRows.map((r) => ({ ...r })));
             setCurrentPage(1);
+            setIsFileUploaded(true);
           }}
           onClear={handleClear}
+          isFileUploaded={isFileUploaded}
+          setIsFileUploaded={setIsFileUploaded}
         />
       </div>
 
-      {/* Virtualized Table */}
       {rows.length > 0 && columns.length > 0 ? (
         <VirtualizedDataGrid
           columns={columns}

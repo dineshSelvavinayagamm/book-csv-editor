@@ -1,9 +1,8 @@
 'use client';
-
 import React, { useState } from 'react';
 import * as Form from '@radix-ui/react-form';
 import { EyeClosedIcon, EyeOpenIcon } from '@radix-ui/react-icons';
-import { Button, IconButton, TextField } from '@radix-ui/themes';
+import { Button, IconButton, TextField, Dialog } from '@radix-ui/themes';
 import { useRouter } from 'next/navigation';
 import { Images } from '../image';
 
@@ -13,6 +12,9 @@ const LoginPage = () => {
   const [password, setPassword] = useState('');
   const [mobileError, setMobileError] = useState('');
   const [passwordError, setPasswordError] = useState('');
+  const [forgotEmail, setForgotEmail] = useState('');
+  const [emailError, setEmailError] = useState('');
+  const [open, setOpen] = useState(false);
   const router = useRouter();
 
   const validateMobileNumber = (value: string): string => {
@@ -28,9 +30,14 @@ const LoginPage = () => {
     return '';
   };
 
+  const validateEmail = (value: string): string => {
+    if (!value) return 'Email is required.';
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) return 'Invalid email format.';
+    return '';
+  };
+
   const handleLogin = (event: React.FormEvent) => {
     event.preventDefault();
-
     const mobileErr = validateMobileNumber(mobileNumber);
     const passwordErr = validatePassword(password);
 
@@ -39,6 +46,16 @@ const LoginPage = () => {
 
     if (!mobileErr && !passwordErr) {
       router.push('/home');
+    }
+  };
+
+  const handleForgotPassword = () => {
+    const err = validateEmail(forgotEmail);
+    setEmailError(err);
+    if (!err) {
+      alert(`Reset link sent to ${forgotEmail}`);
+      setOpen(false);
+      setForgotEmail('');
     }
   };
 
@@ -80,7 +97,7 @@ const LoginPage = () => {
           {mobileError && <p className="text-red-500 text-xs mt-1">{mobileError}</p>}
         </Form.Field>
 
-        <Form.Field className="mb-5" name="password">
+        <Form.Field className="mb-2" name="password">
           <Form.Label className="block text-sm font-semibold text-gray-800 mb-2">
             Password
           </Form.Label>
@@ -101,6 +118,7 @@ const LoginPage = () => {
                 <TextField.Slot />
                 <TextField.Slot pr="3">
                   <IconButton
+                    type="button"
                     onClick={() => setShowPassword(!showPassword)}
                     size="2"
                     variant="ghost"
@@ -119,6 +137,16 @@ const LoginPage = () => {
           {passwordError && <p className="text-red-500 text-xs mt-1">{passwordError}</p>}
         </Form.Field>
 
+        <div className="flex justify-end mb-5">
+          <button
+            type="button"
+            onClick={() => setOpen(true)}
+            className="text-sm text-blue-600 hover:underline"
+          >
+            Forgot Password?
+          </button>
+        </div>
+
         <Button
           onClick={handleLogin}
           style={{
@@ -134,6 +162,40 @@ const LoginPage = () => {
           Login
         </Button>
       </Form.Root>
+
+      <Dialog.Root open={open} onOpenChange={setOpen}>
+        <Dialog.Content className="max-w-md w-full p-6 rounded-2xl shadow-xl bg-white">
+          <Dialog.Title className="text-xl font-bold mb-3">
+            Reset your password
+          </Dialog.Title>
+          <Dialog.Description className="mb-4 text-sm text-gray-600">
+            Enter your registered email address and we’ll send you a reset link.
+          </Dialog.Description>
+
+          <TextField.Root
+            required
+            placeholder="Enter your email"
+            value={forgotEmail}
+            onChange={(e) => setForgotEmail(e.target.value)}
+            className="w-full h-[45px] mb-2"
+            style={{ borderRadius: '12px' }}
+          />
+          {emailError && <p className="text-red-500 text-xs mb-2">{emailError}</p>}
+
+          <div className="flex justify-end gap-2 mt-4">
+            <Button type="button" variant="soft" onClick={() => setOpen(false)}>
+              Cancel
+            </Button>
+            <Button
+              type="button"
+              style={{ background: 'black', color: '#fff' }}
+              onClick={handleForgotPassword}
+            >
+              Send Reset Link
+            </Button>
+          </div>
+        </Dialog.Content>
+      </Dialog.Root>
     </div>
   );
 };

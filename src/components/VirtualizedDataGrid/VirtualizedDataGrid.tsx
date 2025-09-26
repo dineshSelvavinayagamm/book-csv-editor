@@ -1,11 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+'use client';
 import React, { useMemo, useState, useCallback, useRef } from 'react';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import clsx from 'clsx';
+import { Pencil } from 'lucide-react';
 import EditCell from '../EditCell/EditCell';
 
 export interface RowObj {
-  _id: string;
   [key: string]: any;
 }
 
@@ -33,7 +34,7 @@ export default function VirtualizedDataGrid({
   const parentRef = useRef<HTMLDivElement>(null);
   const [sortBy, setSortBy] = useState<string | null>(null);
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('asc');
-  const [editingRowId, setEditingRowId] = useState<string | null>(null);
+  const [editingRowIndex, setEditingRowIndex] = useState<number | null>(null);
 
   const filtered = useMemo(() => {
     if (!filter) return rows;
@@ -61,8 +62,7 @@ export default function VirtualizedDataGrid({
 
   const totalPages = Math.max(1, Math.ceil(sorted.length / pageSize));
   const page = Math.min(Math.max(1, currentPage), totalPages);
-  const pageStart = (page - 1) * pageSize;
-  const pageSlice = sorted.slice(pageStart, pageStart + pageSize);
+  const pageSlice = sorted.slice((page - 1) * pageSize, page * pageSize);
 
   const toggleSort = (col: string) => {
     if (sortBy !== col) {
@@ -72,9 +72,9 @@ export default function VirtualizedDataGrid({
   };
 
   const handleCellChange = useCallback(
-    (rowId: string, col: string, value: any) => {
+    (rowIndex: number, col: string, value: any) => {
       setRows((prevRows) =>
-        prevRows.map((r) => (r._id === rowId ? { ...r, [col]: value } : r)),
+        prevRows.map((r, idx) => (idx === rowIndex ? { ...r, [col]: value } : r)),
       );
     },
     [setRows],
@@ -87,25 +87,55 @@ export default function VirtualizedDataGrid({
     overscan: 5,
   });
 
+  const getPageNumbers = () => {
+    const maxPagesToShow = 5;
+    const pages: (number | string)[] = [];
+    const ellipsis = '...';
+
+    if (totalPages <= maxPagesToShow) {
+      return Array.from({ length: totalPages }, (_, i) => i + 1);
+    }
+
+    const startPage = Math.max(1, page - Math.floor(maxPagesToShow / 2));
+    const endPage = Math.min(totalPages, startPage + maxPagesToShow - 1);
+
+    const adjustedStartPage =
+      endPage === totalPages ? Math.max(1, totalPages - maxPagesToShow + 1) : startPage;
+
+    if (adjustedStartPage > 1) {
+      pages.push(1);
+      if (adjustedStartPage > 2) pages.push(ellipsis);
+    }
+
+    for (let i = adjustedStartPage; i <= endPage; i++) {
+      pages.push(i);
+    }
+
+    if (endPage < totalPages) {
+      if (endPage < totalPages - 1) pages.push(ellipsis);
+      pages.push(totalPages);
+    }
+
+    return pages;
+  };
+
   return (
-    <div className="bg-gradient-to-br from-slate-50 to-white rounded-xl shadow-lg border border-slate-200 overflow-hidden">
+    <div className="bg-white rounded-xl shadow-lg border border-slate-200 overflow-hidden">
       {/* Header */}
-      <div className="p-3 flex items-center gap-3 border-b bg-gradient-to-r from-indigo-500 to-purple-500 text-white">
-        <div className="text-sm font-medium">
-          {sorted.length} rows — page {page} / {totalPages}
-        </div>
+      <div className="p-3 flex items-center gap-3 border-b bg-indigo-600 text-white text-sm font-medium">
+        {sorted.length} rows — page {page} / {totalPages}
         <div className="ml-auto flex items-center gap-2">
           <button
             disabled={page <= 1}
             onClick={() => setCurrentPage(page - 1)}
-            className="px-3 py-1 rounded-lg bg-white/20 text-white hover:bg-white/30 disabled:opacity-40 transition"
+            className="px-3 py-1 rounded-lg bg-white/20 hover:bg-white/30 disabled:opacity-40 transition"
           >
             Prev
           </button>
           <button
             disabled={page >= totalPages}
             onClick={() => setCurrentPage(page + 1)}
-            className="px-3 py-1 rounded-lg bg-white/20 text-white hover:bg-white/30 disabled:opacity-40 transition"
+            className="px-3 py-1 rounded-lg bg-white/20 hover:bg-white/30 disabled:opacity-40 transition"
           >
             Next
           </button>
@@ -113,119 +143,110 @@ export default function VirtualizedDataGrid({
       </div>
 
       {/* Column headers */}
-      <div className="flex bg-gradient-to-r from-slate-100 to-slate-200 border-b">
+      <div className="flex bg-slate-100 border-b">
+        <div style={{ flex: '0 0 60px' }} className="p-2 font-semibold text-slate-700">
+          SI.No
+        </div>
         {columns.map((col) => (
           <div
             key={col}
-            style={{
-              flex: col === '_id' ? '0 0 120px' : 1,
-              minWidth: col === '_id' ? 120 : 150,
-            }}
+            style={{ flex: 1, minWidth: 150 }}
             className="p-2 font-semibold text-slate-700 hover:text-indigo-600 cursor-pointer transition"
             onClick={() => toggleSort(col)}
           >
             {col} {sortBy === col ? (sortDir === 'asc' ? '↑' : '↓') : ''}
           </div>
         ))}
+        <div style={{ flex: '0 0 60px' }} className="p-2 font-semibold text-slate-700">
+          Edit
+        </div>
       </div>
 
-      {/* Virtualized list */}
       <div ref={parentRef} className="h-[600px] overflow-auto">
         <div
-          style={{
-            height: `${rowVirtualizer.getTotalSize()}px`,
-            width: '100%',
-            position: 'relative',
-          }}
+          style={{ height: `${rowVirtualizer.getTotalSize()}px`, position: 'relative' }}
         >
           {rowVirtualizer.getVirtualItems().map((virtualRow) => {
             const row = pageSlice[virtualRow.index];
             if (!row) return null;
-            const original = originalRows.find((r) => r._id === row._id);
+            const rowIndex = (page - 1) * pageSize + virtualRow.index;
+            const original = originalRows[rowIndex];
             const rowChanged = original
               ? columns.some((c) => String(original[c] ?? '') !== String(row[c] ?? ''))
               : false;
 
-            const isEditing = editingRowId === row._id;
+            const isEditing = editingRowIndex === rowIndex;
 
             return (
               <div
-                key={row._id}
-                style={{
-                  position: 'absolute',
-                  top: virtualRow.start,
-                  left: 0,
-                  width: '100%',
-                }}
+                key={rowIndex}
+                style={{ top: virtualRow.start, position: 'absolute', width: '100%' }}
                 className={clsx(
-                  'flex items-stretch border-b transition-colors duration-200',
+                  'flex items-stretch border-b',
                   rowChanged
                     ? 'bg-yellow-100'
                     : virtualRow.index % 2
-                      ? 'bg-white hover:bg-indigo-50'
-                      : 'bg-slate-50 hover:bg-indigo-50',
+                      ? 'bg-white hover:bg-indigo-200'
+                      : 'bg-slate-50 hover:bg-indigo-200',
                 )}
               >
-                {isEditing ? (
-                  // 🔹 MERGED ROW IN EDIT MODE
-                  <div className="p-4 w-full bg-indigo-50">
-                    <div className="flex flex-col gap-3">
-                      {columns.map((col) =>
-                        col === '_id' ? (
-                          <div key={col} className="text-xs font-medium text-slate-600">
-                            ID: {row[col]}
-                          </div>
-                        ) : (
-                          <div key={col} className="flex gap-2 items-center">
-                            <span className="w-32 text-sm font-medium text-slate-700">
-                              {col}:
-                            </span>
-                            <EditCell
-                              value={row[col]}
-                              onChange={(v) => handleCellChange(row._id, col, v)}
-                              highlight
-                              onFocus={() => setEditingRowId(row._id)}
-                              onBlur={() => setEditingRowId(null)}
-                            />
-                          </div>
-                        ),
-                      )}
-                    </div>
+                <div
+                  style={{ flex: '0 0 60px' }}
+                  className="p-2 text-sm font-medium text-slate-600"
+                >
+                  {rowIndex + 1}
+                </div>
+
+                {columns.map((col) => (
+                  <div
+                    key={col}
+                    style={{ flex: 1, minWidth: 150 }}
+                    className="p-2 text-sm"
+                  >
+                    <EditCell
+                      value={row[col]}
+                      onChange={(v) => handleCellChange(rowIndex, col, v)}
+                      highlight={isEditing}
+                      editable={isEditing}
+                    />
                   </div>
-                ) : (
-                  // 🔹 NORMAL ROW
-                  columns.map((col) => {
-                    const val = row[col];
-                    const origVal = original ? original[col] : undefined;
-                    const changed =
-                      origVal !== undefined && String(origVal) !== String(val);
-                    return (
-                      <div
-                        key={col}
-                        style={{
-                          flex: col === '_id' ? '0 0 120px' : 1,
-                          minWidth: col === '_id' ? 120 : 150,
-                        }}
-                        className="p-2 text-sm"
-                      >
-                        {col === '_id' ? (
-                          <div className="text-xs font-medium text-slate-600">{val}</div>
-                        ) : (
-                          <EditCell
-                            value={val}
-                            onChange={(v) => handleCellChange(row._id, col, v)}
-                            highlight={changed}
-                            onFocus={() => setEditingRowId(row._id)}
-                          />
-                        )}
-                      </div>
-                    );
-                  })
-                )}
+                ))}
+
+                {/* Edit Icon */}
+                <div
+                  style={{ flex: '0 0 60px' }}
+                  className="flex items-center justify-center"
+                >
+                  <button
+                    onClick={() => setEditingRowIndex(isEditing ? null : rowIndex)}
+                    className="p-1 rounded hover:bg-indigo-100 text-indigo-600"
+                  >
+                    <Pencil size={16} />
+                  </button>
+                </div>
               </div>
             );
           })}
         </div>
+      </div>
+      <div className="p-3 flex items-center justify-center gap-2 bg-gradient-to-r from-slate-100 to-slate-200 border-t">
+        {getPageNumbers().map((pageNum, index) => (
+          <button
+            key={index}
+            onClick={() => typeof pageNum === 'number' && setCurrentPage(pageNum)}
+            disabled={pageNum === '...' || pageNum === page}
+            className={clsx(
+              'px-3 py-1 rounded-lg text-sm font-medium transition',
+              pageNum === page
+                ? 'bg-indigo-500 text-white'
+                : pageNum === '...'
+                  ? 'text-slate-500 cursor-default'
+                  : 'bg-white text-slate-700 hover:bg-indigo-100',
+            )}
+          >
+            {pageNum}
+          </button>
+        ))}
       </div>
     </div>
   );

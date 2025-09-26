@@ -1,15 +1,27 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, Dispatch, SetStateAction } from 'react';
 import { parseCSVFile } from '@/lib/csv';
-import { Upload } from 'lucide-react'; // Assuming lucide-react for icons
+import { Upload } from 'lucide-react';
+import clsx from 'clsx';
 
-interface CSVUploaderProps {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  onData: (cols: string[], rows: any[]) => void;
-  onClear: () => void;
+interface RowObj {
+  [key: string]: any;
 }
 
-export default function CSVUploader({ onData, onClear }: CSVUploaderProps) {
+interface CSVUploaderProps {
+  onData: (cols: string[], rows: RowObj[]) => void;
+  onClear: () => void;
+  isFileUploaded: boolean;
+  setIsFileUploaded: Dispatch<SetStateAction<boolean>>;
+}
+
+export default function CSVUploader({
+  onData,
+  onClear,
+  isFileUploaded,
+  setIsFileUploaded,
+}: CSVUploaderProps) {
   const fileRef = useRef<HTMLInputElement | null>(null);
   const [loading, setLoading] = useState(false);
   const [parsedRowsCount, setParsedRowsCount] = useState(0);
@@ -26,7 +38,16 @@ export default function CSVUploader({ onData, onClear }: CSVUploaderProps) {
       const { columns, rows } = await parseCSVFile(file, (chunk) => {
         setParsedRowsCount((prev) => prev + chunk.length);
       });
-      onData(columns, rows);
+
+      onData(
+        columns.filter((col) => col !== '_id'),
+        rows.map((row) => {
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          const { _id, ...rest } = row;
+          return rest;
+        }),
+      );
+      setIsFileUploaded(true);
     } catch (err) {
       console.error('parse error', err);
       alert('Error parsing CSV: ' + String(err));
@@ -39,10 +60,11 @@ export default function CSVUploader({ onData, onClear }: CSVUploaderProps) {
     setFileName('');
     setParsedRowsCount(0);
     if (fileRef.current) {
-      fileRef.current.value = ''; // reset the file input
+      fileRef.current.value = '';
     }
-    setInputKey((prev) => prev + 1); // Force re-mount the input to ensure complete reset
-    onClear(); // Call the parent to clear table data
+    setInputKey((prev) => prev + 1);
+    setIsFileUploaded(false);
+    onClear();
   }
 
   return (
@@ -54,8 +76,14 @@ export default function CSVUploader({ onData, onClear }: CSVUploaderProps) {
       <div className="flex items-center gap-4">
         <button
           type="button"
-          className="px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-all duration-300 flex items-center gap-2 shadow-md"
+          className={clsx(
+            'px-6 py-3 bg-indigo-600 text-white rounded-lg flex items-center gap-2 shadow-md transition-all duration-300',
+            isFileUploaded || loading
+              ? 'opacity-50 cursor-not-allowed'
+              : 'hover:bg-indigo-700',
+          )}
           onClick={() => fileRef.current?.click()}
+          disabled={isFileUploaded || loading}
         >
           <Upload size={18} />
           Choose File
@@ -76,7 +104,6 @@ export default function CSVUploader({ onData, onClear }: CSVUploaderProps) {
         )}
       </div>
 
-      {/* hidden native file input */}
       <input
         key={inputKey}
         ref={fileRef}
@@ -84,6 +111,7 @@ export default function CSVUploader({ onData, onClear }: CSVUploaderProps) {
         accept=".csv,.txt,text/csv,text/plain"
         onChange={(e) => handleFile(e.target.files?.[0])}
         className="hidden"
+        disabled={isFileUploaded || loading}
       />
 
       <div className="flex-1">
@@ -105,7 +133,9 @@ export default function CSVUploader({ onData, onClear }: CSVUploaderProps) {
 
         {!loading && (
           <div className="text-sm text-gray-600 italic">
-            Streaming parse enabled. Supports large CSVs up to 10k+ rows.
+            {isFileUploaded
+              ? 'File uploaded. Clear to upload a new file.'
+              : 'Streaming parse enabled. Supports large CSVs up to 10k+ rows.'}
           </div>
         )}
       </div>
