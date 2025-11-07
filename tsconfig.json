@@ -23,6 +23,6 @@
       "@provider/*": ["./src/provider/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "generateBooksCSV.js"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "generateBooksCSV.js", "src/components/EnhancedToolbarPagination"],
   "exclude": ["node_modules"]
 }

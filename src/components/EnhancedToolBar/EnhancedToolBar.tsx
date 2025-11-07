@@ -3,7 +3,9 @@
 import React from 'react';
 import { exportToCSV } from '@/lib/csv';
 import { saveAs } from 'file-saver';
-import { Download, RotateCcw, Filter } from 'lucide-react';
+import { Download, RotateCcw } from 'lucide-react';
+import EnhancedToolBarPagination from '../EnhancedToolbarPagination/EnhancedToolbarPagination';
+import EnhancedToolbarFilter from '../EnhancedToolbarFilter/EnhancedToolbarFilter';
 
 interface RowObj {
   [key: string]: any;
@@ -84,31 +86,11 @@ export default function EnhancedToolbar({
       </button>
 
       <div className="ml-auto flex items-center gap-3">
-        <label className="text-sm font-medium text-gray-700">Rows per page:</label>
-        <select
-          value={pageSize}
-          onChange={(e) => setPageSize(Number(e.target.value))}
-          className="border border-indigo-300 px-3 py-2 rounded-lg text-sm focus:outline-none focus:border-indigo-500 transition-all duration-200 bg-white"
-        >
-          {[25, 50, 100, 250].map((n) => (
-            <option key={n} value={n}>
-              {n}
-            </option>
-          ))}
-        </select>
+        <EnhancedToolBarPagination pageSize={pageSize} setPageSize={setPageSize} />
       </div>
 
       <div className="relative w-full md:w-72">
-        <Filter
-          size={16}
-          className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
-        />
-        <input
-          value={filter}
-          onChange={(e) => setFilter(e.target.value)}
-          placeholder="Filter by Title, Author, Genre..."
-          className="pl-10 pr-4 py-2 border border-indigo-300 rounded-lg w-full focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-all duration-200 bg-white"
-        />
+        <EnhancedToolbarFilter filter={filter} setFilter={setFilter} />
       </div>
     </div>
   );
