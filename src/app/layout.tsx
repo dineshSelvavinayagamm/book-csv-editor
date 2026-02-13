@@ -6,11 +6,14 @@ import '@radix-ui/themes/styles.css';
 import './globals.css';
 import { ApiProvider, AppThemeProvider, AuThProvider } from '@/provider';
 
+import ReduxProvider from '@/redux-provider';
+
 const geistSans = localFont({
   src: './fonts/GeistVF.woff',
   variable: '--font-geist-sans',
   weight: '100 900',
 });
+
 const geistMono = localFont({
   src: './fonts/GeistMonoVF.woff',
   variable: '--font-geist-mono',
@@ -22,18 +25,16 @@ export const metadata: Metadata = {
   description: 'Notion Press Media',
 };
 
-const RootLayout = ({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) => {
+const RootLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <ApiProvider>
           <AppThemeProvider>
             <Theme>
-              <AuThProvider>{children}</AuThProvider>
+              <AuThProvider>
+                <ReduxProvider>{children}</ReduxProvider>
+              </AuThProvider>
             </Theme>
           </AppThemeProvider>
         </ApiProvider>

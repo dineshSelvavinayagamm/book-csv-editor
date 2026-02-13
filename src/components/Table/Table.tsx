@@ -20,7 +20,7 @@ interface AppTableProps {
   onCreate?: () => void;
 }
 
-const AppTable: React.FC<AppTableProps> = ({
+export const AppTable: React.FC<AppTableProps> = ({
   columns,
   data,
   isLoading = false,
@@ -99,4 +99,5 @@ const AppTable: React.FC<AppTableProps> = ({
   );
 };
 
+// Export default as well for compatibility
 export default AppTable;

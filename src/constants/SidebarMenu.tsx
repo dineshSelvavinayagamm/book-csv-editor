@@ -14,4 +14,9 @@ export const SIDE_BAR_MENU = [
     icon: 'https://img.icons8.com/?size=100&id=83326&format=png&color=ffffff',
     items: [{ title: 'CSV Dashboard', route: Navigation.CSV, icon: <ValueIcon /> }],
   },
+  {
+    title: 'CSV Table',
+    icon: 'https://img.icons8.com/?size=100&id=83326&format=png&color=ffffff',
+    items: [{ title: 'CSV Table', route: Navigation.Table, icon: <ValueIcon /> }],
+  },
 ];
