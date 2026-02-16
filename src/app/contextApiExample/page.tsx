@@ -1,4 +1,5 @@
 'use client';
+
 import { useTheme } from '@/context/ThemeContext';
 import { useAppHeader } from '../hooks/appHeader';
 import { useEffect } from 'react';
@@ -6,33 +7,41 @@ import { PageTitle } from '@/constants/PageTitle';
 
 const ContextApiExample = () => {
   const { updateTitle } = useAppHeader();
+  const { theme, toggleTheme } = useTheme();
+
   useEffect(() => {
     updateTitle(PageTitle.ContextApiExample);
   }, [updateTitle]);
-  const { theme, toggleTheme } = useTheme();
 
   return (
     <div
-      style={{
-        backgroundColor: theme === 'light' ? '#ffffff' : '#1e1e1e',
-        color: theme === 'light' ? '#000000' : '#ffffff',
-        minHeight: '100vh',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-      }}
+      className={`
+        h-screen overflow-hidden flex items-center justify-center
+        transition-colors duration-500
+        ${theme === 'light' ? 'bg-gray-100 text-gray-900' : 'bg-gray-900 text-white'}
+      `}
     >
-      <div style={{ textAlign: 'center' }}>
-        <h2>Current Theme: {theme}</h2>
+      <div
+        className={`
+          p-8 rounded-2xl shadow-xl text-center transition-all duration-500
+          ${theme === 'light' ? 'bg-white' : 'bg-gray-800'}
+        `}
+      >
+        <h2 className="text-2xl font-semibold mb-6">Current Theme: {theme}</h2>
+
         <button
           onClick={toggleTheme}
-          style={{
-            padding: '10px 20px',
-            marginTop: '10px',
-            cursor: 'pointer',
-          }}
+          className={`
+            px-6 py-2 rounded-lg font-medium transition-all duration-300
+            ${
+              theme === 'light'
+                ? 'bg-black text-white hover:bg-gray-800'
+                : 'bg-white text-black hover:bg-gray-200'
+            }
+            active:scale-95 shadow-md
+          `}
         >
-          Toggle
+          Toggle Theme
         </button>
       </div>
     </div>
