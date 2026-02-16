@@ -5,8 +5,6 @@ import { Button } from '@radix-ui/themes';
 import { AppTable } from '@/components/Table';
 import { PageTitle } from '@/constants';
 import { useAppHeader } from '../hooks/appHeader';
-import CustomerAdd from '../../components/CustomerAdd';
-import CustomerView from '../../components/CustomerView';
 
 const CsvTable = () => {
   const { updateTitle } = useAppHeader();
