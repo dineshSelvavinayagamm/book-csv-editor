@@ -3,4 +3,7 @@ export enum Navigation {
   Login = '/login',
   CSV = '/csv',
   Table = '/csvTable',
+  ReduxExample = '/reduxExample',
+  ContextApi = 'contextApiExample',
+  ReactQueryExample = 'reactQueryExample',
 }
