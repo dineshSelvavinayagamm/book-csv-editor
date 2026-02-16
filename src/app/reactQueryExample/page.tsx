@@ -12,13 +12,6 @@ interface User {
   email: string;
 }
 
-interface Data {
-  id: number;
-  name: string;
-  username: string;
-  email: string;
-}
-
 const fetchUsers = async (): Promise<User[]> => {
   const res = await fetch('https://jsonplaceholder.typicode.com/users');
 
@@ -26,14 +19,6 @@ const fetchUsers = async (): Promise<User[]> => {
     throw new Error('Failed to fetch users');
   }
 
-  return res.json();
-};
-
-const fetchUser = async (): Promise<Data[]> => {
-  const res = await fetch('');
-  if (!res.ok) {
-    throw new Error('failed to fetch users');
-  }
   return res.json();
 };
 
