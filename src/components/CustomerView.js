@@ -49,7 +49,7 @@ export default function CustomerView() {
       {customers.length === 0 ? (
         <p>No customers added</p>
       ) : (
-        <ul>
+        <ul className="space-y-1">
           {customers.map((customer, index) => (
             <li key={index}>
               {editIndex === index ? (
