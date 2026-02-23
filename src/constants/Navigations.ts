@@ -4,6 +4,7 @@ export enum Navigation {
   CSV = '/csv',
   Table = '/csvTable',
   ReduxExample = '/reduxExample',
-  ContextApi = 'contextApiExample',
-  ReactQueryExample = 'reactQueryExample',
+  ContextApi = '/contextApiExample',
+  ReactQueryExample = '/reactQueryExample',
+  GenarateOTP = '/generateOTP',
 }

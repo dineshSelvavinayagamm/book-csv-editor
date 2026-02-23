@@ -36,4 +36,15 @@ export const SIDE_BAR_MENU = [
       { title: 'React Query', route: Navigation.ReactQueryExample, icon: <ValueIcon /> },
     ],
   },
+  {
+    title: 'Generating OTP',
+    icon: 'https://img.icons8.com/?size=100&id=83326&format=png&color=ffffff',
+    items: [
+      {
+        title: 'OTP Verification Service',
+        route: Navigation.GenarateOTP,
+        icon: <ValueIcon />,
+      },
+    ],
+  },
 ];
